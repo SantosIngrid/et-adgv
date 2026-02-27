@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ET-ADGV 3.0 — Estudo Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET & BASE
+============================================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e14;
+  --panel:#111620;
+  --panel2:#181f2c;
+  --border:#1e2a3a;
+  --border2:#253347;
+  --txt:#d4dde8;
+  --muted:#6b7c8d;
+  --dim:#4a5a6a;
+  --acc:#1a6bff;
+  --acc2:#0d4fc8;
+  --green:#22c55e;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --cyan:#06b6d4;
+  --purple:#a855f7;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+a{color:var(--acc);text-decoration:none}
+/* ============================================================
+   LAYOUT
+============================================================ */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+/* TOPBAR */
+.topbar{
+  display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;
+  background:var(--panel);border-bottom:1px solid var(--border);
+  flex-shrink:0;z-index:100;
+}
+.topbar-logo{
+  display:flex;align-items:center;gap:10px;
+  font-weight:700;font-size:16px;letter-spacing:-.3px;
+}
+.logo-badge{
+  background:var(--acc);color:#fff;
+  font-size:11px;font-weight:700;font-family:var(--mono);
+  padding:3px 7px;border-radius:4px;
+}
+.topbar-tabs{display:flex;gap:0;margin-left:32px}
+.tab-btn{
+  font-family:var(--sans);font-size:13px;font-weight:500;
+  color:var(--muted);background:none;border:none;cursor:pointer;
+  padding:0 18px;height:54px;border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+}
+.tab-btn:hover{color:var(--txt)}
+.tab-btn.active{color:#fff;border-bottom-color:var(--acc)}
+.topbar-right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--dim)}
+/* CONTENT AREA */
+.content{flex:1;overflow:hidden;position:relative}
+.tab-panel{display:none;height:100%;overflow-y:auto}
+.tab-panel.active{display:block}
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--panel)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+/* ============================================================
+   TEORIA TAB
+============================================================ */
+.teoria-layout{display:flex;height:100%}
+.teoria-nav{
+  width:240px;flex-shrink:0;
+  background:var(--panel);border-right:1px solid var(--border);
+  overflow-y:auto;padding:16px 0;
+}
+.teoria-nav-group{margin-bottom:4px}
+.teoria-nav-group-title{
+  font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--dim);padding:8px 20px 4px;
+}
+.teoria-nav-item{
+  display:block;width:100%;text-align:left;
+  font-family:var(--sans);font-size:13px;color:var(--muted);
+  background:none;border:none;cursor:pointer;
+  padding:7px 20px;border-left:2px solid transparent;
+  transition:all .15s;
+}
+.teoria-nav-item:hover{color:var(--txt);background:var(--panel2)}
+.teoria-nav-item.active{color:var(--acc);border-left-color:var(--acc);background:rgba(26,107,255,.06)}
+.teoria-body{flex:1;overflow-y:auto;padding:36px 48px}
+/* SECTION */
+.teoria-section{display:none;max-width:820px;margin:0 auto}
+.teoria-section.active{display:block}
+.section-tag{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;margin-bottom:12px;
+}
+.tag-hid{background:rgba(6,182,212,.12);color:var(--cyan);border:1px solid rgba(6,182,212,.25)}
+.tag-tra{background:rgba(245,158,11,.12);color:var(--yellow);border:1px solid rgba(245,158,11,.25)}
+.tag-esc{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.25)}
+.tag-top{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.tag-fund{background:rgba(26,107,255,.12);color:var(--acc);border:1px solid rgba(26,107,255,.25)}
+.section-title{font-size:26px;font-weight:700;letter-spacing:-.4px;margin-bottom:8px}
+.section-subtitle{color:var(--muted);margin-bottom:28px;font-size:14px}
+.divider{height:1px;background:var(--border);margin:28px 0}
+/* CARDS */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:20px 0}
+.info-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:16px;
+}
+.info-card-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.info-card-value{font-size:20px;font-weight:700;font-family:var(--mono);color:#fff}
+.info-card-sub{font-size:12px;color:var(--muted);margin-top:3px}
+/* TABLES */
+.std-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.std-table th{
+  background:var(--panel);color:var(--muted);font-weight:600;font-size:11px;
+  letter-spacing:.6px;text-transform:uppercase;
+  padding:10px 14px;border-bottom:1px solid var(--border2);text-align:left;
+}
+.std-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.std-table tr:hover td{background:rgba(26,107,255,.04)}
+.mono{font-family:var(--mono);font-size:12px}
+/* ALERT BOXES */
+.alert{border-radius:8px;padding:14px 18px;margin:16px 0;border-left:3px solid;font-size:14px}
+.alert-info{background:rgba(26,107,255,.08);border-color:var(--acc)}
+.alert-warn{background:rgba(245,158,11,.08);border-color:var(--yellow)}
+.alert-ok{background:rgba(34,197,94,.08);border-color:var(--green)}
+.alert-err{background:rgba(239,68,68,.08);border-color:var(--red)}
+.alert strong{display:block;margin-bottom:4px}
+/* FORMULA */
+.formula-box{
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  padding:16px 20px;margin:16px 0;font-family:var(--mono);font-size:14px;
+}
+.formula-box .var{color:var(--yellow)}
+.formula-box .op{color:var(--muted)}
+.formula-box .result{color:var(--green)}
+/* SCALE CALC */
+.scale-calc{margin:20px 0}
+.calc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:12px 0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.calc-cell{padding:10px 12px;border-right:1px solid var(--border);font-size:12px;text-align:center}
+.calc-cell:last-child{border-right:none}
+.calc-head{background:var(--panel);color:var(--muted);font-weight:600;font-size:11px;letter-spacing:.6px;text-transform:uppercase}
+.calc-body{border-top:1px solid var(--border)}
+.calc-body .calc-cell:first-child{font-family:var(--mono);color:var(--purple)}
+/* PRIMITIVE TYPES */
+.prim-row{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+.prim-card{flex:1;min-width:160px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
+.prim-icon{font-size:24px;margin-bottom:8px}
+.prim-name{font-weight:700;font-size:14px;margin-bottom:4px}
+.prim-desc{font-size:12px;color:var(--muted)}
+/* FEATURE TABLE */
+.feat-group{margin-bottom:28px}
+.feat-group-title{font-size:16px;font-weight:700;margin-bottom:12px;color:var(--cyan)}
+/* heading levels */
+h2{font-size:20px;font-weight:700;margin:24px 0 12px;letter-spacing:-.3px}
+h3{font-size:16px;font-weight:600;margin:20px 0 10px;color:var(--txt)}
+p{margin-bottom:12px;color:var(--muted)}
+p strong{color:var(--txt)}
+ul,ol{margin:10px 0 10px 20px;color:var(--muted)}
+li{margin-bottom:5px}
+li strong{color:var(--txt)}
+code{font-family:var(--mono);font-size:12px;background:var(--panel);padding:2px 6px;border-radius:4px;color:var(--cyan)}
+
+/* SVG DIAGRAMS */
+.diagram-wrap{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:20px;margin:16px 0;text-align:center}
+.diagram-wrap svg{max-width:100%;height:auto}
+.diagram-caption{font-size:12px;color:var(--muted);margin-top:10px;font-style:italic}
+
+/* ============================================================
+   RESUMO TAB
+============================================================ */
+.resumo-wrap{max-width:900px;margin:0 auto;padding:36px 48px}
+.resumo-section{margin-bottom:40px}
+.resumo-section-title{
+  font-size:18px;font-weight:700;margin-bottom:16px;padding-bottom:10px;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;
+}
+.chip{
+  font-size:10px;font-family:var(--mono);font-weight:500;
+  padding:2px 8px;border-radius:20px;
+}
+.chip-hid{background:rgba(6,182,212,.15);color:var(--cyan)}
+.chip-tra{background:rgba(245,158,11,.15);color:var(--yellow)}
+.chip-all{background:rgba(26,107,255,.15);color:var(--acc)}
+.resumo-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.resumo-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px}
+.resumo-card-title{font-weight:700;font-size:14px;margin-bottom:8px;color:#fff}
+.resumo-card-body{font-size:13px;color:var(--muted);line-height:1.65}
+.resumo-card-body strong{color:var(--txt)}
+.resumo-card-body .mono{color:var(--yellow);font-family:var(--mono);font-size:12px}
+/* mini table */
+.mini-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.mini-table th{background:var(--panel2);color:var(--muted);padding:5px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.mini-table td{padding:5px 8px;border-bottom:1px solid var(--border)}
+.mini-table td:first-child{font-family:var(--mono);color:var(--purple)}
+
+/* ============================================================
+   QUIZ TAB
+============================================================ */
+.quiz-wrap{max-width:960px;margin:0 auto;padding:28px 36px 80px}
+/* quiz topbar */
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.quiz-info{display:flex;align-items:center;gap:20px}
+.quiz-stat{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.quiz-stat strong{color:#fff}
+.prog-wrap{flex:1;max-width:320px;height:4px;background:var(--border);border-radius:2px;margin:0 20px}
+.prog-inner{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--acc),var(--cyan));transition:width .4s}
+/* question card */
+.qcard{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.qcard-header{padding:18px 22px 12px;border-bottom:1px solid var(--border)}
+.qcard-meta{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.qcard-num{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.difficulty{font-size:10px;font-family:var(--mono);font-weight:500;padding:2px 8px;border-radius:20px}
+.diff-1{background:rgba(34,197,94,.15);color:var(--green)}
+.diff-2{background:rgba(245,158,11,.15);color:var(--yellow)}
+.diff-3{background:rgba(239,68,68,.15);color:var(--red)}
+.diff-4{background:rgba(168,85,247,.15);color:var(--purple)}
+.qcard-text{font-size:15px;font-weight:600;line-height:1.45;color:#fff}
+.qcard-body{padding:16px 22px 18px}
+/* options */
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.opt{
+  display:flex;align-items:flex-start;gap:12px;
+  background:var(--panel2);border:1px solid var(--border);border-radius:8px;
+  padding:12px 16px;cursor:pointer;transition:all .15s;
+}
+.opt:hover:not(.disabled){border-color:var(--acc);background:rgba(26,107,255,.06)}
+.opt.selected-correct{border-color:var(--green);background:rgba(34,197,94,.08)}
+.opt.selected-wrong{border-color:var(--red);background:rgba(239,68,68,.08)}
+.opt.reveal{border-color:var(--green);background:rgba(34,197,94,.06)}
+.opt.disabled{cursor:default}
+.opt-letter{
+  width:24px;height:24px;border-radius:6px;flex-shrink:0;
+  background:var(--border2);font-weight:700;font-size:12px;font-family:var(--mono);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.opt.selected-correct .opt-letter{background:var(--green);color:#000}
+.opt.selected-wrong .opt-letter{background:var(--red);color:#fff}
+.opt.reveal .opt-letter{background:var(--green);color:#000}
+.opt-text{font-size:14px;line-height:1.5;padding-top:2px}
+/* explanation */
+.explanation{
+  border-radius:8px;padding:14px 18px;font-size:14px;display:none;
+  margin-top:4px;animation:fadeIn .25s ease;
+}
+.explanation.show{display:block}
+.explanation.correct{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2)}
+.explanation.wrong{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2)}
+.explanation-header{font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.explanation.correct .explanation-header{color:var(--green)}
+.explanation.wrong .explanation-header{color:var(--red)}
+.explanation-text{color:#adbdcc;line-height:1.65}
+.explanation-text strong{color:#dde6f0}
+.explanation-ref{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+/* nav */
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.btn{font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 22px;border-radius:7px;cursor:pointer;border:none;transition:all .15s}
+.btn-primary{background:var(--acc);color:#fff}
+.btn-primary:hover{background:var(--acc2)}
+.btn-secondary{background:var(--panel2);color:var(--txt);border:1px solid var(--border2)}
+.btn-secondary:hover{background:var(--border)}
+.btn-hidden{visibility:hidden}
+/* category filter */
+.cat-filter{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.cat-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:6px 14px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--muted);transition:all .15s}
+.cat-btn:hover{border-color:var(--acc);color:var(--acc)}
+.cat-btn.active{background:rgba(26,107,255,.12);border-color:var(--acc);color:#fff}
+/* finish screen */
+.finish-screen{display:none;text-align:center;padding:60px 20px;animation:fadeIn .3s}
+.finish-screen.show{display:block}
+.finish-score{font-size:72px;font-weight:800;font-family:var(--mono);background:linear-gradient(135deg,var(--acc),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.finish-label{font-size:16px;color:var(--muted);margin:8px 0 36px}
+.finish-grid{display:inline-grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px}
+.finish-item{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 24px}
+.finish-item .num{font-size:28px;font-weight:800;font-family:var(--mono)}
+.finish-item .lbl{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.finish-item.c .num{color:var(--green)}
+.finish-item.w .num{color:var(--red)}
+.finish-item.p .num{color:var(--cyan)}
+/* SVGs inline */
+.qsvg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.qsvg-box{background:var(--panel2);border:2px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.qsvg-box:hover:not(.qdisabled){border-color:var(--acc)}
+.qsvg-box.qselected-correct{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+.qsvg-box.qselected-wrong{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.qsvg-box.qreveal-correct{border-color:var(--green)}
+.qsvg-box .svg-inner{background:#141c26;padding:18px;display:flex;align-items:center;justify-content:center}
+.qsvg-box .svg-inner svg{width:100%;height:170px}
+.qsvg-box .svg-label{padding:9px 12px;font-size:12px;color:var(--muted);font-family:var(--mono);text-align:center;border-top:1px solid var(--border)}
+.qsvg-badge{position:absolute;top:8px;right:8px;font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:12px;opacity:0;transition:opacity .3s;pointer-events:none}
+.qsvg-wrap{position:relative}
+.qsvg-wrap .qsvg-badge.ok-badge{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.qsvg-wrap .qsvg-badge.err-badge{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.qsvg-wrap.qselected-correct .ok-badge,.qsvg-wrap.qreveal-correct .ok-badge{opacity:1}
+.qsvg-wrap.qselected-wrong .err-badge{opacity:1}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:700px){
+  .topbar-tabs{gap:0}
+  .tab-btn{padding:0 12px;font-size:12px}
+  .teoria-layout{flex-direction:column}
+  .teoria-nav{width:100%;border-right:none;border-bottom:1px solid var(--border);max-height:180px}
+  .teoria-body,.resumo-wrap,.quiz-wrap{padding:20px 16px}
+  .qsvg-row{grid-template-columns:1fr}
+  .finish-grid{grid-template-columns:1fr}
+  .calc-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <span class="logo-badge">DSG</span>
+    ET-ADGV 3.0
+  </div>
+  <div class="topbar-tabs">
+    <button class="tab-btn active" onclick="showTab('teoria')">📚 Teoria</button>
+    <button class="tab-btn" onclick="showTab('resumo')">📋 Resumo</button>
+    <button class="tab-btn" onclick="showTab('quiz')">🎯 Questões</button>
+  </div>
+  <div class="topbar-right">Exército Brasileiro · DSG · 2018</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ============================= TEORIA ============================= -->
+<div class="tab-panel active" id="tab-teoria">
+<div class="teoria-layout">
+  <!-- NAV -->
+  <nav class="teoria-nav">
+    <div class="teoria-nav-group">
+      <div class="teoria-nav-group-title">Fundamentos</div>
+      <button class="teoria-nav-item active" onclick="showSection('s-intro')">Introdução e Objetivos</button>
+      <button class="teoria-nav-item" onclick="showSection('s-escala')">Escalas e Dimensões</button>
+      <button class="teoria-nav-item" onclick="showSection('s-primitiva')">Primitivas Geométricas</button>
+      <button class="teoria-nav-item" onclick="showSection('s-topologia')">Topologia e Regras</button>
+    </div>
+    <div class="teoria-nav-group">
+      <div class="teoria-nav-group-title">Hidrografia</div>
+      <button class="teoria-nav-item" onclick="showSection('s-hid-intro')">Visão Geral HID</button>
+      <button class="teoria-nav-item" onclick="showSection('s-hid-trecho')">Trecho de Drenagem</button>
+      <button class="teoria-nav-item" onclick="showSection('s-hid-massa')">Massa d'Água</button>
+      <button class="teoria-nav-item" onclick="showSection('s-hid-barragem')">Barragem e Açude</button>
+      <button class="teoria-nav-item" onclick="showSection('s-hid-regras')">Regras Topológicas HID</button>
+    </div>
+    <div class="teoria-nav-group">
+      <div class="teoria-nav-group-title">Transporte</div>
+      <button class="teoria-nav-item" onclick="showSection('s-tra-intro')">Visão Geral TRA</button>
+      <button class="teoria-nav-item" onclick="showSection('s-tra-rod')">Rodovias</button>
+      <button class="teoria-nav-item" onclick="showSection('s-tra-fer')">Ferrovias</button>
+      <button class="teoria-nav-item" onclick="showSection('s-tra-regras')">Regras Topológicas TRA</button>
+      <button class="teoria-nav-item" onclick="showSection('s-tra-estrutura')">Estruturas Viárias</button>
+    </div>
+  </nav>
+
+  <!-- BODY -->
+  <div class="teoria-body">
+
+    <!-- ---- INTRO ---- -->
+    <div class="teoria-section active" id="s-intro">
+      <span class="section-tag tag-fund">Fundamentos</span>
+      <div class="section-title">Introdução e Objetivos</div>
+      <div class="section-subtitle">ET-ADGV 3.0 — Exército Brasileiro, DSG, publicada em 21/12/2018</div>
+
+      <p>A <strong>Especificação Técnica para Aquisição de Dados Geoespaciais Vetoriais (ET-ADGV) versão 3.0</strong> é a norma que define as regras de aquisição de cada classe de objetos previstas na ET-EDGV 3.0. Ela determina como as feições devem ser digitalizadas — incluindo geometria, atributos, dimensões mínimas, regras topológicas e critérios de seleção.</p>
+
+      <div class="alert alert-info">
+        <strong>📌 Relação ET-EDGV × ET-ADGV</strong>
+        A ET-EDGV 3.0 define <em>o que</em> existe (estrutura de dados, classes, atributos). A ET-ADGV 3.0 define <em>como adquirir</em> (regras de geometria, dimensões mínimas, topologia).
+      </div>
+
+      <h2>Contexto e Histórico</h2>
+      <p>A ET-ADGV 3.0 foi desenvolvida pela <strong>Diretoria de Serviço Geográfico (DSG)</strong> do Exército Brasileiro, sendo submetida à CONCAR para homologação. Seus novos projetos a partir de 2019 utilizam a EDGV 3.0 + ADGV 3.0 como padrão.</p>
+      <p>Projetos anteriores como o <strong>MapTopoGE</strong> (Grandes Escalas, >1:25.000) e o <strong>MapTopoPE</strong> (Pequenas Escalas, ≤1:25.000) são os contextos de aplicação desta norma.</p>
+
+      <h2>Categorias de Informação Principais</h2>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-label">HID</div><div class="info-card-value" style="font-size:14px;color:var(--cyan)">Hidrografia</div><div class="info-card-sub">Águas interiores, drenagem, massas d'água</div></div>
+        <div class="info-card"><div class="info-card-label">TRA</div><div class="info-card-value" style="font-size:14px;color:var(--yellow)">Transporte</div><div class="info-card-sub">Rodoviário, ferroviário, hidroviário, aéreo</div></div>
+        <div class="info-card"><div class="info-card-label">REL</div><div class="info-card-value" style="font-size:14px;color:var(--green)">Relevo</div><div class="info-card-sub">Curvas de nível, pontos cotados</div></div>
+        <div class="info-card"><div class="info-card-label">VEG</div><div class="info-card-value" style="font-size:14px;color:var(--purple)">Vegetação</div><div class="info-card-sub">Cobertura vegetal natural e cultivada</div></div>
+        <div class="info-card"><div class="info-card-label">LML</div><div class="info-card-value" style="font-size:14px;color:var(--acc)">Limites</div><div class="info-card-sub">Limites político-administrativos</div></div>
+        <div class="info-card"><div class="info-card-label">EDF</div><div class="info-card-value" style="font-size:14px;color:#f87171">Edificações</div><div class="info-card-sub">Construções no MapTopoGE</div></div>
+      </div>
+
+      <div class="alert alert-ok">
+        <strong>✅ Norma vigente:</strong> Os projetos DSG iniciados a partir de 2019 usam obrigatoriamente o par ET-EDGV 3.0 + ET-ADGV 3.0. A versão anterior (ET-ADGV Defesa F Ter) foi substituída.
+      </div>
+    </div>
+
+    <!-- ---- ESCALAS ---- -->
+    <div class="teoria-section" id="s-escala">
+      <span class="section-tag tag-esc">Escalas</span>
+      <div class="section-title">Escalas e Dimensões Mínimas</div>
+      <div class="section-subtitle">Relação entre escala, dimensão no mapa e distância real no terreno</div>
+
+      <h2>Fórmula Fundamental da Escala</h2>
+      <div class="formula-box">
+        <span class="var">E</span> <span class="op">=</span> <span class="var">d</span> <span class="op">/</span> <span class="var">D</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="var">D</span> <span class="op">=</span> <span class="var">d</span> <span class="op">×</span> <span class="var">N</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="var">d</span> <span class="op">=</span> <span class="var">D</span> <span class="op">/</span> <span class="var">N</span>
+      </div>
+      <p>Onde: <strong>E</strong> = escala (ex: 1/25.000), <strong>d</strong> = distância no mapa (em cm), <strong>D</strong> = distância real (em cm no terreno), <strong>N</strong> = denominador da escala.</p>
+
+      <h2>Dimensão Mínima de Aquisição</h2>
+      <p>A ET-ADGV estabelece que feições com dimensões inferiores ao <strong>limite mínimo de percepção cartográfica</strong> — convencionalmente <strong>0,4 mm no mapa</strong> para linhas e dimensões mínimas — não precisam ser individualizadas. Abaixo de <strong>0,6 mm</strong> (área mínima) a feição pode ser suprimida ou representada como ponto.</p>
+
+      <div class="alert alert-warn">
+        <strong>⚠️ Dimensão mínima × escala:</strong> A mesma feição pode ou não ser adquirida dependendo da escala do produto. Uma construção de 5m de lado é adquirível em 1:1.000 mas pode ser suprimida em 1:25.000.
+      </div>
+
+      <h2>Tabela de Conversão — Dimensão mínima 0,4 mm no mapa</h2>
+      <div class="calc-grid">
+        <div class="calc-cell calc-head">Escala</div>
+        <div class="calc-cell calc-head">0,4 mm → m</div>
+        <div class="calc-cell calc-head">0,6 mm → m</div>
+        <div class="calc-cell calc-head">1 mm → m</div>
+        <div class="calc-cell calc-head">2 mm → m</div>
+
+        <div class="calc-cell calc-body mono">1:1.000</div>
+        <div class="calc-cell calc-body">0,4 m</div>
+        <div class="calc-cell calc-body">0,6 m</div>
+        <div class="calc-cell calc-body">1 m</div>
+        <div class="calc-cell calc-body">2 m</div>
+
+        <div class="calc-cell calc-body mono">1:2.000</div>
+        <div class="calc-cell calc-body">0,8 m</div>
+        <div class="calc-cell calc-body">1,2 m</div>
+        <div class="calc-cell calc-body">2 m</div>
+        <div class="calc-cell calc-body">4 m</div>
+
+        <div class="calc-cell calc-body mono">1:5.000</div>
+        <div class="calc-cell calc-body">2 m</div>
+        <div class="calc-cell calc-body">3 m</div>
+        <div class="calc-cell calc-body">5 m</div>
+        <div class="calc-cell calc-body">10 m</div>
+
+        <div class="calc-cell calc-body mono">1:10.000</div>
+        <div class="calc-cell calc-body">4 m</div>
+        <div class="calc-cell calc-body">6 m</div>
+        <div class="calc-cell calc-body">10 m</div>
+        <div class="calc-cell calc-body">20 m</div>
+
+        <div class="calc-cell calc-body mono">1:25.000</div>
+        <div class="calc-cell calc-body" style="color:var(--yellow);font-weight:600">10 m</div>
+        <div class="calc-cell calc-body" style="color:var(--yellow)">15 m</div>
+        <div class="calc-cell calc-body">25 m</div>
+        <div class="calc-cell calc-body">50 m</div>
+
+        <div class="calc-cell calc-body mono">1:50.000</div>
+        <div class="calc-cell calc-body">20 m</div>
+        <div class="calc-cell calc-body">30 m</div>
+        <div class="calc-cell calc-body">50 m</div>
+        <div class="calc-cell calc-body">100 m</div>
+
+        <div class="calc-cell calc-body mono">1:100.000</div>
+        <div class="calc-cell calc-body">40 m</div>
+        <div class="calc-cell calc-body">60 m</div>
+        <div class="calc-cell calc-body">100 m</div>
+        <div class="calc-cell calc-body">200 m</div>
+
+        <div class="calc-cell calc-body mono">1:250.000</div>
+        <div class="calc-cell calc-body">100 m</div>
+        <div class="calc-cell calc-body">150 m</div>
+        <div class="calc-cell calc-body">250 m</div>
+        <div class="calc-cell calc-body">500 m</div>
+      </div>
+
+      <h2>Regras de Dimensão Mínima por Feição (ET-ADGV 3.0)</h2>
+      <div style="overflow-x:auto">
+      <table class="std-table" style="min-width:780px">
+        <tr>
+          <th>Feição</th>
+          <th>Primitiva</th>
+          <th>Dim. mínima (mapa)</th>
+          <th style="color:var(--yellow)">1:25.000</th>
+          <th style="color:var(--cyan)">1:50.000</th>
+          <th style="color:var(--green)">1:100.000</th>
+          <th style="color:var(--purple)">1:250.000</th>
+        </tr>
+        <tr>
+          <td>Trecho de Drenagem</td><td>Linha</td><td>qualquer comprimento</td>
+          <td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td>
+        </tr>
+        <tr>
+          <td>Massa d'Água — área</td><td>Polígono</td><td>≥ 4 mm² no mapa</td>
+          <td class="mono" style="color:var(--yellow)">≥ 2.500 m²</td>
+          <td class="mono" style="color:var(--cyan)">≥ 10.000 m²</td>
+          <td class="mono" style="color:var(--green)">≥ 40.000 m²</td>
+          <td class="mono" style="color:var(--purple)">≥ 250.000 m²</td>
+        </tr>
+        <tr>
+          <td>Ilha em rio</td><td>Polígono</td><td>≥ 4 mm² no mapa</td>
+          <td class="mono" style="color:var(--yellow)">≥ 2.500 m²</td>
+          <td class="mono" style="color:var(--cyan)">≥ 10.000 m²</td>
+          <td class="mono" style="color:var(--green)">≥ 40.000 m²</td>
+          <td class="mono" style="color:var(--purple)">≥ 250.000 m²</td>
+        </tr>
+        <tr>
+          <td>Rio duplo (faixa)</td><td>Polígono</td><td>largura ≥ 0,4 mm</td>
+          <td class="mono" style="color:var(--yellow)">≥ 10 m</td>
+          <td class="mono" style="color:var(--cyan)">≥ 20 m</td>
+          <td class="mono" style="color:var(--green)">≥ 40 m</td>
+          <td class="mono" style="color:var(--purple)">≥ 100 m</td>
+        </tr>
+        <tr>
+          <td>Trecho Rodoviário</td><td>Linha (eixo)</td><td>qualquer comprimento</td>
+          <td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td>
+        </tr>
+        <tr>
+          <td>Área de rodovia (pista)</td><td>Polígono</td><td>largura ≥ 0,4 mm</td>
+          <td class="mono" style="color:var(--yellow)">≥ 10 m</td>
+          <td class="mono" style="color:var(--cyan)">≥ 20 m</td>
+          <td class="mono" style="color:var(--green)">≥ 40 m</td>
+          <td class="mono" style="color:var(--purple)">≥ 100 m</td>
+        </tr>
+        <tr>
+          <td>Trecho Ferroviário</td><td>Linha</td><td>qualquer comprimento</td>
+          <td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td>
+        </tr>
+        <tr>
+          <td>Edificação MapTopoGE</td><td>Polígono</td><td>≥ 0,4 × 0,4 mm</td>
+          <td class="mono" style="color:var(--yellow)">≥ 10×10 m</td>
+          <td class="mono" style="color:var(--cyan)">≥ 20×20 m</td>
+          <td class="mono" style="color:var(--green)">≥ 40×40 m</td>
+          <td class="mono" style="color:var(--purple)">≥ 100×100 m</td>
+        </tr>
+      </table>
+      </div>
+      <p style="font-size:12px;color:var(--dim);margin-top:6px">* Área mínima calculada: (0,4 mm × N)² onde N é o denominador da escala. Ex: 1:50.000 → (0,4×50.000 mm)² = (20.000 mm)² ... simplificando: 0,4mm→20m → 20×20 = 400 m² por faixa; para polígonos de área mínima (√4 mm² = 2mm lado) → 2mm × N = lado mínimo no terreno.</p>
+
+      <h2>Exemplos de Cálculo</h2>
+      <div class="alert alert-info">
+        <strong>Exemplo 1:</strong> Um lago tem 1.800 m² de área real. A escala é 1:25.000. A área mínima no mapa é 4 mm². Área do lago no mapa = 1.800 / 25.000² = 1.800 / 625.000.000 m² = 2,88 × 10⁻⁶ m² = 2,88 mm². Como 2,88 mm² &lt; 4 mm², o lago <strong>não deve ser adquirido como polígono</strong> nessa escala.
+      </div>
+      <div class="alert alert-ok">
+        <strong>Exemplo 2:</strong> Um rio tem largura de 12 m. Na escala 1:25.000, 0,4 mm = 10 m. Como 12 m > 10 m, o rio <strong>pode ser adquirido como polígono (faixa de margem a margem)</strong>.
+      </div>
+    </div>
+
+    <!-- ---- PRIMITIVAS ---- -->
+    <div class="teoria-section" id="s-primitiva">
+      <span class="section-tag tag-fund">Fundamentos</span>
+      <div class="section-title">Primitivas Geométricas</div>
+      <div class="section-subtitle">Os três tipos de geometria vetorial e suas aplicações na ET-ADGV 3.0</div>
+
+      <div class="prim-row">
+        <div class="prim-card">
+          <div class="prim-icon">●</div>
+          <div class="prim-name">Ponto</div>
+          <div class="prim-desc">Feição com localização definida, sem extensão dimensionável na escala. Ex: nascente, ponto cotado, marco.</div>
+        </div>
+        <div class="prim-card">
+          <div class="prim-icon">╱</div>
+          <div class="prim-name">Linha</div>
+          <div class="prim-desc">Feição com extensão linear. Ex: trecho de drenagem, eixo de rodovia, curva de nível, linha de transmissão.</div>
+        </div>
+        <div class="prim-card">
+          <div class="prim-icon">⬟</div>
+          <div class="prim-name">Polígono</div>
+          <div class="prim-desc">Feição com área fechada. Ex: lago, edificação, bairro, área de vegetação. Deve ser fechado e sem auto-interseções.</div>
+        </div>
+      </div>
+
+      <div class="alert alert-warn">
+        <strong>⚠️ Escolha da primitiva depende da escala:</strong> Uma mesma feição real pode ser ponto em escala pequena e polígono em escala grande. Um açude é ponto em 1:250.000 e polígono em 1:25.000.
+      </div>
+
+      <h2>Feições com Representação Dupla</h2>
+      <p>Alguns objetos têm representação por <strong>linha + polígono</strong> conforme a largura real:</p>
+      <table class="std-table">
+        <tr><th>Feição</th><th>Condição → Linha</th><th>Condição → Polígono</th></tr>
+        <tr><td>Rio / canal</td><td>Largura &lt; limiar da escala (ex: &lt;10m em 1:25.000)</td><td>Largura ≥ limiar da escala</td></tr>
+        <tr><td>Rodovia</td><td>Sempre por eixo (linha); área da pista se largura ≥ limiar</td><td>Faixa de domínio ou canteiro em escala grande</td></tr>
+        <tr><td>Ferrovia</td><td>Sempre por linha (eixo do trilho)</td><td>Pátio ferroviário em escala grande</td></tr>
+      </table>
+
+      <h2>Regras Gerais de Geometria</h2>
+      <ul>
+        <li><strong>Polígonos</strong> devem ser fechados (último vértice = primeiro vértice) e sem auto-interseção.</li>
+        <li><strong>Linhas</strong> não devem ter vértices duplicados ou trechos de comprimento zero.</li>
+        <li><strong>Vértices</strong> devem ser suficientes para representar a forma real sem distorção, mas sem excesso (vértices redundantes devem ser removidos).</li>
+        <li>A <strong>orientação</strong> de linhas de drenagem deve ser sempre montante → jusante.</li>
+        <li>A orientação de trechos de rodovia deve ser padronizada conforme os critérios de numeração da via.</li>
+      </ul>
+    </div>
+
+    <!-- ---- TOPOLOGIA ---- -->
+    <div class="teoria-section" id="s-topologia">
+      <span class="section-tag tag-top">Topologia</span>
+      <div class="section-title">Topologia e Regras de Integridade</div>
+      <div class="section-subtitle">Consistência espacial entre feições — fundamentos e erros comuns</div>
+
+      <h2>Conceitos Fundamentais</h2>
+      <p>A <strong>topologia</strong> define as relações espaciais entre feições: conectividade, adjacência, contenção e orientação. A ET-ADGV 3.0 impõe regras topológicas que garantem a integridade das redes e a consistência do banco de dados.</p>
+
+      <h2>Erros Topológicos Mais Comuns</h2>
+      <table class="std-table">
+        <tr><th>Erro</th><th>Definição</th><th>Feições Afetadas</th></tr>
+        <tr><td><strong>Dangling Node</strong></td><td>Nó que não se conecta a outra feição; extremidade solta</td><td>Drenagem, rodovias, ferrovias</td></tr>
+        <tr><td><strong>Overshoot</strong></td><td>Linha ultrapassa o ponto de terminação correto</td><td>Qualquer linha de rede</td></tr>
+        <tr><td><strong>Undershoot</strong></td><td>Linha não alcança o ponto de conexão (gap)</td><td>Qualquer linha de rede</td></tr>
+        <tr><td><strong>Pseudo-nó faltante</strong></td><td>Cruzamento sem nó compartilhado</td><td>Rodovias, ferrovias, rios</td></tr>
+        <tr><td><strong>Polígono aberto</strong></td><td>Polígono com borda não fechada</td><td>Massas d'água, edificações</td></tr>
+        <tr><td><strong>Auto-interseção</strong></td><td>Polígono ou linha que cruza a si mesmo</td><td>Polígonos em geral</td></tr>
+        <tr><td><strong>Sobreposição indevida</strong></td><td>Duas feições do mesmo tipo se sobrepõem</td><td>Polígonos de mesma classe</td></tr>
+      </table>
+
+      <h2>Regra dos Nós Compartilhados</h2>
+      <p>Toda <strong>junção entre feições lineares de rede</strong> (drenagem, transporte) exige um <strong>nó compartilhado</strong> — o vértice final de uma feição deve coincidir exatamente (mesmas coordenadas) com o vértice inicial ou final de outra.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="height:160px">
+          <!-- ERRADO -->
+          <text x="80" y="20" fill="#ef4444" font-size="11" font-family="IBM Plex Mono" text-anchor="middle">ERRADO</text>
+          <polyline points="20,80 80,80 130,80" fill="none" stroke="#c8a84b" stroke-width="5" stroke-linecap="round"/>
+          <polyline points="80,20 80,75" fill="none" stroke="#c8a84b" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="80" cy="75" r="5" fill="#ef4444" stroke="#0a0e14" stroke-width="1.5"/>
+          <circle cx="80" cy="80" r="5" fill="#ef4444" stroke="#0a0e14" stroke-width="1.5"/>
+          <text x="95" y="62" fill="#ef4444" font-size="9" font-family="IBM Plex Mono">gap</text>
+          <!-- CORRETO -->
+          <text x="300" y="20" fill="#22c55e" font-size="11" font-family="IBM Plex Mono" text-anchor="middle">CORRETO</text>
+          <polyline points="240,80 300,80 380,80" fill="none" stroke="#c8a84b" stroke-width="5" stroke-linecap="round"/>
+          <polyline points="300,20 300,80" fill="none" stroke="#c8a84b" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="300" cy="80" r="6" fill="#22c55e" stroke="#0a0e14" stroke-width="1.5"/>
+          <text x="310" y="75" fill="#22c55e" font-size="9" font-family="IBM Plex Mono">nó</text>
+        </svg>
+        <div class="diagram-caption">Nó compartilhado: vértices devem coincidir exatamente. Gap = dangling node = erro topológico.</div>
+      </div>
+    </div>
+
+    <!-- ---- HID INTRO ---- -->
+    <div class="teoria-section" id="s-hid-intro">
+      <span class="section-tag tag-hid">Hidrografia</span>
+      <div class="section-title">Visão Geral — Categoria HID</div>
+      <div class="section-subtitle">Classes de objetos hidrográficos na ET-ADGV 3.0</div>
+
+      <p>A categoria <strong>Hidrografia (HID)</strong> agrupa as feições que representam as águas interiores e oceânicas da superfície terrestre, além de elementos naturais ou artificiais do ambiente aquático.</p>
+
+      <h2>Principais Classes de Objetos HID</h2>
+      <table class="std-table">
+        <tr><th>Classe</th><th>Código EDGV</th><th>Primitiva</th><th>Descrição</th></tr>
+        <tr><td>Trecho de Drenagem</td><td class="mono">hid_trecho_drenagem_l</td><td>Linha</td><td>Curso d'água natural ou artificial (canal), desde a nascente até a foz ou confluência</td></tr>
+        <tr><td>Massa d'Água</td><td class="mono">hid_massa_dagua_a</td><td>Polígono</td><td>Corpo d'água com superfície definida: lagos, lagoas, reservatórios, açudes, etc.</td></tr>
+        <tr><td>Ilha</td><td class="mono">hid_ilha_a</td><td>Polígono</td><td>Terra emersa delimitada por água em todos os lados</td></tr>
+        <tr><td>Barragem/Dique</td><td class="mono">hid_barragem_l / _a</td><td>Linha ou Pol.</td><td>Estrutura artificial de contenção de água</td></tr>
+        <tr><td>Queda d'Água</td><td class="mono">hid_queda_dagua_p / _l</td><td>Ponto ou Linha</td><td>Cachoeira, catarata, corredeira</td></tr>
+        <tr><td>Foz</td><td class="mono">hid_foz_p</td><td>Ponto</td><td>Ponto de desembocadura de um curso d'água</td></tr>
+        <tr><td>Nascente</td><td class="mono">hid_nascente_p</td><td>Ponto</td><td>Ponto de origem de um curso d'água</td></tr>
+        <tr><td>Área Úmida</td><td class="mono">hid_area_umida_a</td><td>Polígono</td><td>Brejos, várzeas, pântanos</td></tr>
+        <tr><td>Recife / Banco</td><td class="mono">hid_recife_a / hid_banco_a</td><td>Polígono</td><td>Estruturas subaquáticas que afetam a navegação</td></tr>
+      </table>
+
+      <h2>Atributos Comuns (HID)</h2>
+      <table class="std-table">
+        <tr><th>Atributo</th><th>Tipo</th><th>Domínio / Exemplo</th></tr>
+        <tr><td>geometriaAproximada</td><td>Boolean</td><td>true / false — indica se a geometria é estimada</td></tr>
+        <tr><td>nome</td><td>Texto</td><td>"Rio São Francisco", "Lago Paranoá"</td></tr>
+        <tr><td>nomeAbrev</td><td>Texto</td><td>Abreviatura oficial</td></tr>
+        <tr><td>situacaoLeito</td><td>Enum</td><td>perene / intermitente / seco / efêmero</td></tr>
+        <tr><td>regime</td><td>Enum</td><td>permanente / temporário</td></tr>
+      </table>
+    </div>
+
+    <!-- ---- HID TRECHO ---- -->
+    <div class="teoria-section" id="s-hid-trecho">
+      <span class="section-tag tag-hid">Hidrografia</span>
+      <div class="section-title">Trecho de Drenagem</div>
+      <div class="section-subtitle">Regras de aquisição para linhas de drenagem</div>
+
+      <h2>Definição</h2>
+      <p>O <strong>trecho de drenagem</strong> representa um segmento de curso d'água entre dois nós hidrográficos consecutivos (nascente, confluência, bifurcação, foz ou ponto de mudança de atributo). Cada trecho é uma feição independente.</p>
+
+      <h2>Regras de Aquisição</h2>
+      <div class="alert alert-ok">
+        <strong>✅ Regra fundamental — orientação:</strong> Todo trecho de drenagem deve ser digitalizado no sentido <strong>montante → jusante</strong> (da nascente para a foz). Esta regra é obrigatória para análises de bacia hidrográfica e modelagem hidrológica.
+      </div>
+
+      <ul>
+        <li>O trecho deve ser representado pelo <strong>eixo do talvegue</strong> (linha de maior profundidade do leito).</li>
+        <li>Cada trecho começa e termina em um <strong>nó hidrográfico</strong> (ponto de confluência, nascente ou foz).</li>
+        <li>Rios com largura ≥ limiar da escala devem ter também a <strong>faixa de margem a margem como polígono</strong> (classe hid_massa_dagua_a).</li>
+        <li>A linha de trecho de drenagem deve passar <strong>dentro do polígono de massa d'água</strong> quando ambos existirem simultaneamente.</li>
+        <li>Trechos que passam sob pontes ou estruturas similares devem ser <strong>contínuos</strong> (não interrompidos).</li>
+        <li>Canais artificiais, valas e drenos também são representados como trechos de drenagem, com atributo de origem artificial.</li>
+      </ul>
+
+      <h2>Atributos do Trecho de Drenagem</h2>
+      <table class="std-table">
+        <tr><th>Atributo</th><th>Obrigatório</th><th>Domínio</th></tr>
+        <tr><td>nome</td><td>Recomendado</td><td>Nome oficial do curso d'água</td></tr>
+        <tr><td>situacaoLeito</td><td>Sim</td><td>perene / intermitente / efêmero / seco</td></tr>
+        <tr><td>tipoTrecho</td><td>Sim</td><td>natural / artificial (canal, vala, dreno)</td></tr>
+        <tr><td>ordemHidrografica</td><td>Recomendado</td><td>Ordem de Strahler ou Shreve</td></tr>
+        <tr><td>geometriaAproximada</td><td>Sim</td><td>true / false</td></tr>
+      </table>
+
+      <h2>Diagrama — Rede de Drenagem</h2>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" style="height:180px">
+          <rect width="400" height="220" fill="#141c26"/>
+          <!-- afluente esq -->
+          <polyline points="30,30 80,70 120,100" fill="none" stroke="#5aaddb" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="118,98 112,106 108,95" fill="#22c55e"/>
+          <!-- afluente dir -->
+          <polyline points="200,20 180,60 160,100" fill="none" stroke="#5aaddb" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="158,98 162,107 153,104" fill="#22c55e"/>
+          <!-- rio principal -->
+          <polyline points="120,100 160,100 240,140 320,180 380,200" fill="none" stroke="#3a8fc4" stroke-width="6" stroke-linecap="round"/>
+          <polygon points="378,198 370,193 375,185" fill="#22c55e"/>
+          <!-- nós -->
+          <circle cx="120" cy="100" r="6" fill="#22c55e" stroke="#141c26" stroke-width="1.5"/>
+          <circle cx="160" cy="100" r="6" fill="#22c55e" stroke="#141c26" stroke-width="1.5"/>
+          <!-- labels -->
+          <text x="55" y="60" fill="#7dd3fc" font-size="9" font-family="IBM Plex Mono">afluente</text>
+          <text x="160" y="45" fill="#7dd3fc" font-size="9" font-family="IBM Plex Mono">afluente</text>
+          <text x="240" y="165" fill="#3a8fc4" font-size="10" font-family="IBM Plex Mono">rio principal</text>
+          <text x="110" y="90" fill="#22c55e" font-size="8" font-family="IBM Plex Mono">confluência</text>
+          <!-- setas de fluxo -->
+          <text x="10" y="20" fill="#6b7c8d" font-size="9" font-family="IBM Plex Mono">↙ montante</text>
+          <text x="330" y="215" fill="#6b7c8d" font-size="9" font-family="IBM Plex Mono">jusante ↘</text>
+        </svg>
+        <div class="diagram-caption">Confluências devem ter nós compartilhados. Fluxo sempre montante → jusante.</div>
+      </div>
+    </div>
+
+    <!-- ---- HID MASSA ---- -->
+    <div class="teoria-section" id="s-hid-massa">
+      <span class="section-tag tag-hid">Hidrografia</span>
+      <div class="section-title">Massa d'Água</div>
+      <div class="section-subtitle">Lagos, lagoas, reservatórios, represas, açudes e faixas de rio</div>
+
+      <h2>Definição e Aplicação</h2>
+      <p>A classe <strong>Massa d'Água (hid_massa_dagua_a)</strong> representa corpos d'água com área superficial definida. Sua primitiva é sempre <strong>polígono</strong>.</p>
+
+      <h2>Critérios de Aquisição</h2>
+      <ul>
+        <li>Lagos e lagoas com área ≥ limiar mínimo da escala devem ser adquiridos como polígono.</li>
+        <li>Rios com largura ≥ limiar da escala devem ter sua faixa margem-a-margem representada como polígono de massa d'água, <strong>além do trecho de drenagem linear</strong> que passa internamente.</li>
+        <li>O polígono deve representar a <strong>margem ordinária</strong> (nível médio das águas), não a cheia máxima.</li>
+        <li>Ilhas dentro de corpos d'água devem ser representadas como <strong>ilhas (hid_ilha_a)</strong>, com o polígono de massa d'água "perfurado" em volta dela.</li>
+      </ul>
+
+      <div class="alert alert-info">
+        <strong>📌 Topologia exigida:</strong> O polígono de massa d'água deve ser <strong>topologicamente consistente</strong>: fechado, sem auto-interseções, sem gaps com polígonos adjacentes da mesma classe.
+      </div>
+
+      <h2>Atributos Principais</h2>
+      <table class="std-table">
+        <tr><th>Atributo</th><th>Domínio / Notas</th></tr>
+        <tr><td>tipo</td><td>lago natural / lagoa / reservatório / açude / represa / canal / brejo / outro</td></tr>
+        <tr><td>regime</td><td>permanente / temporário</td></tr>
+        <tr><td>nome</td><td>Nome oficial</td></tr>
+        <tr><td>areaSuperficial</td><td>Em m² (calculado a partir da geometria)</td></tr>
+      </table>
+    </div>
+
+    <!-- ---- HID BARRAGEM ---- -->
+    <div class="teoria-section" id="s-hid-barragem">
+      <span class="section-tag tag-hid">Hidrografia</span>
+      <div class="section-title">Barragem, Dique e Açude</div>
+      <div class="section-subtitle">Estruturas artificiais de contenção e controle hídrico</div>
+
+      <h2>Barragem (hid_barragem_l / _a)</h2>
+      <p>Estrutura transversal a um curso d'água que retém água a montante. Representada como <strong>linha</strong> (eixo da barragem) ou <strong>polígono</strong> em escala grande suficiente para mostrar a largura.</p>
+      <ul>
+        <li>A linha deve <strong>cruzar o polígono de massa d'água</strong> do reservatório formado.</li>
+        <li>A linha de barragem deve <strong>tocar ambas as margens</strong> do rio (nós nas margens).</li>
+        <li>O trecho de drenagem a montante e a jusante são feições separadas (o nó de separação fica na barragem).</li>
+      </ul>
+
+      <h2>Açude</h2>
+      <p>Reservatório artificial de pequeno porte, muito comum no Nordeste. A água represada é representada como <strong>polígono de massa d'água</strong> (tipo = açude). A estrutura de contenção é representada como barragem.</p>
+
+      <div class="alert alert-warn">
+        <strong>⚠️ Atenção:</strong> O polígono do açude/reservatório representa a <strong>superfície da água</strong>, não a área do terreno inundável. A barragem é uma feição separada que deve tocar os limites do polígono d'água.
+      </div>
+    </div>
+
+    <!-- ---- HID REGRAS ---- -->
+    <div class="teoria-section" id="s-hid-regras">
+      <span class="section-tag tag-hid">Hidrografia</span>
+      <div class="section-title">Regras Topológicas — Hidrografia</div>
+      <div class="section-subtitle">Integridade espacial obrigatória para redes de drenagem</div>
+
+      <h2>Regras de Conectividade da Rede</h2>
+      <table class="std-table">
+        <tr><th>Regra</th><th>Descrição</th><th>Consequência da Violação</th></tr>
+        <tr><td>Nó compartilhado em confluência</td><td>Todo ponto de junção de cursos d'água deve ter um nó exato</td><td>Dangling node — rede desconectada</td></tr>
+        <tr><td>Continuidade sob pontes</td><td>Trechos de drenagem não são interrompidos por pontes</td><td>Lacuna na rede hidrográfica</td></tr>
+        <tr><td>Trecho dentro da massa d'água</td><td>O eixo de drenagem deve passar dentro do polígono de massa d'água</td><td>Inconsistência geométrica</td></tr>
+        <tr><td>Orientação montante-jusante</td><td>Fluxo sempre da nascente para a foz</td><td>Erros em modelagem hidrológica</td></tr>
+        <tr><td>Sem trechos duplicados</td><td>Nenhum segmento deve ser representado duas vezes</td><td>Contagem dupla em análises</td></tr>
+        <tr><td>Barragem toca margens</td><td>A linha de barragem toca ambos os lados do rio</td><td>Barragem "flutuante" sem sentido</td></tr>
+      </table>
+
+      <h2>Relacionamento Trecho × Massa d'Água</h2>
+      <div class="alert alert-info">
+        <strong>📌 Quando o rio é polígono E linha:</strong> Em rios representados como faixa (polígono), o trecho de drenagem linear continua existindo e deve estar <strong>completamente contido dentro do polígono</strong>. O trecho linear é o "eixo" e o polígono é a "margem a margem".
+      </div>
+    </div>
+
+    <!-- ---- TRA INTRO ---- -->
+    <div class="teoria-section" id="s-tra-intro">
+      <span class="section-tag tag-tra">Transporte</span>
+      <div class="section-title">Visão Geral — Sistema de Transporte</div>
+      <div class="section-subtitle">Classes do subsistema rodoviário e ferroviário na ET-ADGV 3.0</div>
+
+      <p>A categoria <strong>Sistema de Transporte (TRA)</strong> agrupa os subsistemas destinados ao transporte e deslocamento de carga e passageiros. Para a ET-ADGV 3.0, os subsistemas mais detalhados são o <strong>Rodoviário (ROD)</strong> e o <strong>Ferroviário (FER)</strong>.</p>
+
+      <h2>Subsistemas</h2>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-label">ROD</div><div class="info-card-value" style="font-size:14px;color:var(--yellow)">Rodoviário</div><div class="info-card-sub">Rodovias, vias urbanas, ciclovias, estradas</div></div>
+        <div class="info-card"><div class="info-card-label">FER</div><div class="info-card-value" style="font-size:14px;color:var(--acc)">Ferroviário</div><div class="info-card-sub">Ferrovias, metrôs, monotrilhos, VLT</div></div>
+        <div class="info-card"><div class="info-card-label">HDV</div><div class="info-card-value" style="font-size:14px;color:var(--cyan)">Hidroviário</div><div class="info-card-sub">Portos, ancoradouros, rotas aquáticas</div></div>
+        <div class="info-card"><div class="info-card-label">AER</div><div class="info-card-value" style="font-size:14px;color:var(--purple)">Aeroportuário</div><div class="info-card-sub">Aeroportos, pistas, helipontos</div></div>
+        <div class="info-card"><div class="info-card-label">DUT</div><div class="info-card-value" style="font-size:14px;color:var(--green)">Dutos</div><div class="info-card-sub">Oleodutos, gasodutos, minerodutos</div></div>
+      </div>
+    </div>
+
+    <!-- ---- TRA ROD ---- -->
+    <div class="teoria-section" id="s-tra-rod">
+      <span class="section-tag tag-tra">Transporte</span>
+      <div class="section-title">Rodovias — Trecho Rodoviário</div>
+      <div class="section-subtitle">Regras de aquisição para a rede viária rodoviária</div>
+
+      <h2>Definição</h2>
+      <p>O <strong>trecho rodoviário</strong> representa um segmento de via entre dois nós de transporte consecutivos (interseção, início/fim de via, mudança de atributo). É adquirido pelo <strong>eixo da via</strong> independente do número de pistas.</p>
+
+      <h2>Regras de Aquisição</h2>
+      <ul>
+        <li>Toda via deve ser representada pelo <strong>eixo</strong> (linha central).</li>
+        <li>Vias com canteiro central são representadas por <strong>dois trechos paralelos</strong> (um por pista), com nós nos pontos de retorno.</li>
+        <li>Em interseções, os segmentos devem ser <strong>partidos</strong> e compartilhar um nó topológico.</li>
+        <li>A via deve ser partida sempre que houver <strong>mudança de atributo</strong> relevante (tipo de pavimento, jurisdição, nome).</li>
+        <li>Estradas não pavimentadas, trilhas e caminhos também são adquiridos como trechos rodoviários, com o atributo <code>revestimento</code> adequado.</li>
+      </ul>
+
+      <h2>Atributos do Trecho Rodoviário</h2>
+      <table class="std-table">
+        <tr><th>Atributo</th><th>Obrigatório</th><th>Domínio/Exemplo</th></tr>
+        <tr><td>codTrecho</td><td>Sim</td><td>Código único do trecho</td></tr>
+        <tr><td>jurisdicao</td><td>Sim</td><td>federal / estadual / municipal / particular</td></tr>
+        <tr><td>administracao</td><td>Sim</td><td>DNIT / concessionária / prefeitura</td></tr>
+        <tr><td>revestimento</td><td>Sim</td><td>pavimentado / não pavimentado / leito natural</td></tr>
+        <tr><td>nrFaixas</td><td>Sim</td><td>número inteiro ≥ 1</td></tr>
+        <tr><td>tipoPavimento</td><td>Sim</td><td>asfalto / concreto / paralelepípedo / outro</td></tr>
+        <tr><td>situacao</td><td>Sim</td><td>planejado / em construção / operacional / abandonado</td></tr>
+        <tr><td>nome</td><td>Recomendado</td><td>"BR-101", "Av. Paulista"</td></tr>
+        <tr><td>posicaoRelativa</td><td>Condicional</td><td>em nível / elevado (viaduto) / subterrâneo (túnel)</td></tr>
+      </table>
+
+      <h2>Viaduto × Interseção em Nível</h2>
+      <div class="alert alert-warn">
+        <strong>⚠️ Regra crítica:</strong> Quando uma via <strong>passa por cima de outra sem conexão física</strong> (viaduto), <strong>NÃO deve existir nó</strong> no cruzamento geométrico. Cada via é independente. O atributo <code>posicaoRelativa = elevado</code> distingue o viaduto. Se há conexão física (cruzamento em nível), deve existir nó compartilhado e os segmentos devem ser partidos.
+      </div>
+    </div>
+
+    <!-- ---- TRA FER ---- -->
+    <div class="teoria-section" id="s-tra-fer">
+      <span class="section-tag tag-tra">Transporte</span>
+      <div class="section-title">Ferrovias — Trecho Ferroviário</div>
+      <div class="section-subtitle">Regras de aquisição para a rede ferroviária</div>
+
+      <h2>Definição</h2>
+      <p>O <strong>trecho ferroviário</strong> representa um segmento da rede ferroviária entre dois nós ferroviários consecutivos. É adquirido pelo <strong>eixo do trilho</strong> (ou eixo entre os dois trilhos em linha dupla).</p>
+
+      <h2>Regras de Aquisição</h2>
+      <ul>
+        <li>Ferrovias de linha singela têm <strong>um trecho</strong> por segmento.</li>
+        <li>Ferrovias de linha dupla têm <strong>dois trechos paralelos</strong>, um por linha.</li>
+        <li>Em bifurcações e cruzamentos, os trechos devem ser partidos com <strong>nó compartilhado</strong>.</li>
+        <li>A geometria deve reproduzir fielmente as curvas do traçado, evitando vértices abruptos desnecessários.</li>
+        <li>Pátios ferroviários com múltiplos trilhos podem ser representados como <strong>área</strong> em escala grande.</li>
+      </ul>
+
+      <h2>Atributos do Trecho Ferroviário</h2>
+      <table class="std-table">
+        <tr><th>Atributo</th><th>Domínio</th></tr>
+        <tr><td>bitola</td><td>larga (1,60 m) / métrica (1,00 m) / mista / estreita</td></tr>
+        <tr><td>nrLinhas</td><td>1 / 2 / múltiplas</td></tr>
+        <tr><td>situacao</td><td>em operação / em construção / desativado / abandonado</td></tr>
+        <tr><td>eletrificada</td><td>sim / não</td></tr>
+        <tr><td>posicaoRelativa</td><td>em nível / elevado / subterrâneo</td></tr>
+      </table>
+    </div>
+
+    <!-- ---- TRA REGRAS ---- -->
+    <div class="teoria-section" id="s-tra-regras">
+      <span class="section-tag tag-tra">Transporte</span>
+      <div class="section-title">Regras Topológicas — Transporte</div>
+      <div class="section-subtitle">Integridade espacial para redes viárias e ferroviárias</div>
+
+      <h2>Regras de Conectividade da Rede Viária</h2>
+      <table class="std-table">
+        <tr><th>Regra</th><th>Descrição</th><th>Consequência da Violação</th></tr>
+        <tr><td>Nó em interseção</td><td>Todo cruzamento em nível exige nó compartilhado e segmentos partidos</td><td>Falsa desconexão — impossibilita roteamento</td></tr>
+        <tr><td>Sem nó em viaduto/túnel</td><td>Cruzamentos sem conexão física (viaduto/túnel) NÃO têm nó</td><td>Conectividade falsa entre vias</td></tr>
+        <tr><td>Sem overshoot</td><td>Segmento não pode ultrapassar o ponto de término</td><td>Dangling node — segmento espúrio</td></tr>
+        <tr><td>Sem undershoot</td><td>Segmento deve alcançar exatamente o ponto de conexão</td><td>Gap na rede — não roteável</td></tr>
+        <tr><td>Partição por atributo</td><td>Via deve ser partida onde atributo muda (ex: pavimento)</td><td>Inconsistência de dados</td></tr>
+        <tr><td>Sem duplicatas</td><td>Nenhum segmento deve ser representado duas vezes</td><td>Distorção em análises de comprimento</td></tr>
+      </table>
+
+      <div class="alert alert-ok">
+        <strong>✅ Resumo viaduto:</strong> posicaoRelativa = <code>elevado</code> → sem nó no cruzamento geométrico. posicaoRelativa = <code>em nível</code> → com nó compartilhado e segmentos partidos.
+      </div>
+    </div>
+
+    <!-- ---- TRA ESTRUTURA ---- -->
+    <div class="teoria-section" id="s-tra-estrutura">
+      <span class="section-tag tag-tra">Transporte</span>
+      <div class="section-title">Estruturas Viárias</div>
+      <div class="section-subtitle">Pontes, túneis, viadutos, rotatórias e outras estruturas</div>
+
+      <h2>Ponte (tra_ponte_l / _a)</h2>
+      <p>Estrutura que permite a passagem de uma via sobre um obstáculo (rio, ferrovia, outra via). Representada como:</p>
+      <ul>
+        <li><strong>Linha</strong>: eixo da ponte, coincidente com o trecho rodoviário/ferroviário que sobre ela passa.</li>
+        <li><strong>Polígono</strong>: em escala grande, representando o contorno da estrutura.</li>
+      </ul>
+      <p>O trecho de drenagem (rio) abaixo da ponte não é interrompido. A via sobre a ponte tem <code>posicaoRelativa = elevado</code>.</p>
+
+      <h2>Túnel (tra_tunel_l)</h2>
+      <p>Trecho de via que passa subterraneamente. O segmento de via tem <code>posicaoRelativa = subterrâneo</code>. Não há nó no cruzamento com feições da superfície. A linha do túnel pode ser representada com símbolo específico.</p>
+
+      <h2>Rotatória</h2>
+      <p>A rotatória é adquirida como um conjunto de trechos rodoviários que formam o anel. Cada entrada/saída é um nó de interseção com o anel. Não existe feição específica "rotatória" — ela é a topologia dos trechos.</p>
+
+      <h2>Estacionamento / Pátio</h2>
+      <p>Representado como <strong>polígono</strong> de área de transporte. Não faz parte da rede linear de trechos.</p>
+
+      <div class="alert alert-info">
+        <strong>📌 Passagem de pedestre sobre/sob via:</strong> Passarelas e passagens subterrâneas para pedestres são feições independentes de Estrutura de Mobilidade Urbana (EMU), não pertencentes ao subsistema rodoviário.
+      </div>
+    </div>
+
+  </div><!-- /teoria-body -->
+</div><!-- /teoria-layout -->
+</div><!-- /tab-teoria -->
+
+
+<!-- ============================= RESUMO ============================= -->
+<div class="tab-panel" id="tab-resumo">
+<div class="resumo-wrap">
+  <h1 style="font-size:24px;font-weight:800;margin-bottom:8px">Resumo ET-ADGV 3.0</h1>
+  <p style="color:var(--muted);margin-bottom:32px">Síntese dos pontos mais cobrados em concursos e provas técnicas</p>
+
+  <!-- ESCALAS -->
+  <div class="resumo-section">
+    <div class="resumo-section-title"><span class="chip chip-all">ESCALAS</span>Conversão e Dimensões Mínimas</div>
+    <div class="resumo-cards">
+      <div class="resumo-card">
+        <div class="resumo-card-title">Fórmula da Escala</div>
+        <div class="resumo-card-body">
+          <span class="mono">D = d × N</span> &nbsp;|&nbsp; <span class="mono">d = D / N</span><br>
+          D = dist. real (cm) · d = dist. mapa (cm) · N = denominador<br>
+          <strong>Ex:</strong> 1:25.000 → 1 cm no mapa = 25.000 cm = 250 m no terreno
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Dimensão Mínima Geral</div>
+        <div class="resumo-card-body">
+          <strong>0,4 mm</strong> = limiar mínimo de percepção linear<br>
+          <strong>4 mm²</strong> = área mínima de polígono (aprox.)<br>
+          <table class="mini-table">
+            <tr><th>Escala</th><th>0,4 mm →</th><th>4 mm² →</th></tr>
+            <tr><td>1:5.000</td><td>2 m</td><td>100 m²</td></tr>
+            <tr><td>1:25.000</td><td>10 m</td><td>2.500 m²</td></tr>
+            <tr><td>1:50.000</td><td>20 m</td><td>10.000 m²</td></tr>
+            <tr><td>1:100.000</td><td>40 m</td><td>160.000 m²</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Rio: Linha ou Polígono?</div>
+        <div class="resumo-card-body">
+          <strong>Largura &lt; 0,4 mm mapa</strong> → só linha (trecho de drenagem)<br>
+          <strong>Largura ≥ 0,4 mm mapa</strong> → polígono de massa d'água <em>mais</em> linha de trecho<br>
+          <strong>Ex 1:25.000:</strong> rio &lt;10 m → só linha. Rio ≥10 m → polígono + linha
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDROGRAFIA -->
+  <div class="resumo-section">
+    <div class="resumo-section-title"><span class="chip chip-hid">HID</span>Hidrografia — Pontos Chave</div>
+    <div class="resumo-cards">
+      <div class="resumo-card">
+        <div class="resumo-card-title">Orientação de Drenagem</div>
+        <div class="resumo-card-body">
+          Sempre <strong>montante → jusante</strong>. Obrigatório para toda rede de drenagem. Errar a orientação inviabiliza análises hidrológicas.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Confluências</div>
+        <div class="resumo-card-body">
+          Toda junção de cursos d'água exige <strong>nó compartilhado</strong> (mesmas coordenadas). Dangling node = erro. O trecho afluente deve ter seu último vértice coincidindo com um vértice do rio principal.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Sob Pontes</div>
+        <div class="resumo-card-body">
+          O trecho de drenagem é <strong>contínuo</strong> (não interrompido) ao passar sob pontes. A ponte é feição independente. Interromper o rio = erro topológico grave.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Massa d'Água</div>
+        <div class="resumo-card-body">
+          Lagos, lagoas, reservatórios, açudes → sempre <strong>polígono fechado</strong>. Margem ordinária (nível médio). Trecho de drenagem passa <em>dentro</em> do polígono quando há representação dupla.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Barragem × Reservatório</div>
+        <div class="resumo-card-body">
+          A <strong>barragem</strong> é uma feição linear que toca ambas as margens. O <strong>reservatório</strong> é um polígono de massa d'água. São duas classes distintas. A barragem deve estar sobre o rio (cruzando o polígono d'água).
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Classes HID Resumidas</div>
+        <div class="resumo-card-body">
+          <span class="mono">_l</span> = linha · <span class="mono">_a</span> = área (polígono) · <span class="mono">_p</span> = ponto<br>
+          Nascente → ponto · Trecho → linha · Lago → polígono · Ilha → polígono · Barragem → linha ou polígono
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSPORTE -->
+  <div class="resumo-section">
+    <div class="resumo-section-title"><span class="chip chip-tra">TRA</span>Transporte — Pontos Chave</div>
+    <div class="resumo-cards">
+      <div class="resumo-card">
+        <div class="resumo-card-title">Interseção em Nível</div>
+        <div class="resumo-card-body">
+          Cruzamento físico de vias → <strong>nó compartilhado obrigatório</strong> + segmentos partidos no cruzamento. Falta de nó = erro que impede roteamento.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Viaduto (sem conexão)</div>
+        <div class="resumo-card-body">
+          Via passa <em>por cima</em> de outra sem acesso físico → <strong>SEM nó</strong> no cruzamento geométrico. Atributo <code>posicaoRelativa = elevado</code>. Inserir nó falso cria conectividade inexistente.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Overshoot / Undershoot</div>
+        <div class="resumo-card-body">
+          <strong>Overshoot:</strong> linha ultrapassa o ponto final → dangling node.<br>
+          <strong>Undershoot:</strong> linha não alcança o ponto de junção → gap/undershoot.<br>
+          Ambos são erros topológicos que invalidam a rede.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Partição da Via</div>
+        <div class="resumo-card-body">
+          A via deve ser partida em todo ponto de <strong>mudança de atributo</strong> relevante: mudança de pavimento, jurisdição, nome, nrFaixas, situação. Cada segmento é uma feição com atributos homogêneos.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Ferroviária — Curvas</div>
+        <div class="resumo-card-body">
+          Curvas ferroviárias devem ser representadas com geometria <strong>suave e contínua</strong>, com vértices suficientes para reproduzir o traçado real. Evitar ângulos abruptos e vértices redundantes.
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Via com Canteiro Central</div>
+        <div class="resumo-card-body">
+          Representada por <strong>dois trechos paralelos</strong>, um por pista de rolamento. Os pontos de retorno (conversão em U) são nós que conectam os dois trechos.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPOLOGIA GERAL -->
+  <div class="resumo-section">
+    <div class="resumo-section-title"><span class="chip chip-all">TOPOLOGIA</span>Regras de Integridade Espacial</div>
+    <div class="resumo-cards">
+      <div class="resumo-card">
+        <div class="resumo-card-title">Os 7 Erros Topológicos Principais</div>
+        <div class="resumo-card-body">
+          1. <strong>Dangling node</strong> — nó sem conexão<br>
+          2. <strong>Overshoot</strong> — linha ultrapassa o fim<br>
+          3. <strong>Undershoot</strong> — linha não alcança a junção<br>
+          4. <strong>Pseudo-nó faltante</strong> — cruzamento sem nó<br>
+          5. <strong>Polígono aberto</strong> — borda não fechada<br>
+          6. <strong>Auto-interseção</strong> — linha ou polígono cruza a si mesmo<br>
+          7. <strong>Sobreposição indevida</strong> — duas feições se sobrepõem
+        </div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-title">Primitiva × Feição (tabela rápida)</div>
+        <div class="resumo-card-body">
+          <table class="mini-table">
+            <tr><th>Feição</th><th>Primitiva</th></tr>
+            <tr><td>Nascente</td><td>Ponto</td></tr>
+            <tr><td>Trecho drenagem</td><td>Linha</td></tr>
+            <tr><td>Lago/açude</td><td>Polígono</td></tr>
+            <tr><td>Ilha</td><td>Polígono</td></tr>
+            <tr><td>Trecho rod./ferrov.</td><td>Linha</td></tr>
+            <tr><td>Edificação (GE)</td><td>Polígono</td></tr>
+            <tr><td>Curva de nível</td><td>Linha</td></tr>
+            <tr><td>Ponto cotado</td><td>Ponto</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /tab-resumo -->
+
+
+<!-- ============================= QUIZ ============================= -->
+<div class="tab-panel" id="tab-quiz">
+<div class="quiz-wrap">
+
+  <div id="quiz-main-area">
+    <div class="quiz-topbar">
+      <div class="quiz-info">
+        <div class="quiz-stat">Questão <strong id="qnum">1</strong> de <strong id="qtotal">50</strong></div>
+        <div class="prog-wrap"><div class="prog-inner" id="qprog" style="width:0%"></div></div>
+        <div class="quiz-stat">Acertos: <strong id="qscore">0</strong></div>
+      </div>
+    </div>
+
+    <div class="cat-filter" id="catFilter">
+      <button class="cat-btn active" onclick="filterCat('all',this)">Todas</button>
+      <button class="cat-btn" onclick="filterCat('HID',this)">Hidrografia</button>
+      <button class="cat-btn" onclick="filterCat('TRA',this)">Transporte</button>
+      <button class="cat-btn" onclick="filterCat('ESC',this)">Escalas</button>
+      <button class="cat-btn" onclick="filterCat('TOP',this)">Topologia</button>
+      <button class="cat-btn" onclick="filterCat('FUND',this)">Fundamentos</button>
+    </div>
+
+    <div id="qcards-container"></div>
+    <div class="qnav">
+      <button class="btn btn-secondary" id="btnPrev" onclick="prevQ()">← Anterior</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextQ()" style="display:none">Próxima →</button>
+    </div>
+  </div>
+
+  <div class="finish-screen" id="finishScreen">
+    <div class="finish-score" id="finalScore"></div>
+    <div class="finish-label" id="finalLabel"></div>
+    <div class="finish-grid">
+      <div class="finish-item c"><div class="num" id="fc">0</div><div class="lbl">Corretas</div></div>
+      <div class="finish-item w"><div class="num" id="fw">0</div><div class="lbl">Erradas</div></div>
+      <div class="finish-item p"><div class="num" id="fp">0%</div><div class="lbl">Aproveit.</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="restartQuiz()" style="margin-right:12px">↺ Reiniciar</button>
+    <button class="btn btn-secondary" onclick="showTab('resumo')">📋 Ver Resumo</button>
+  </div>
+
+</div>
+</div><!-- /tab-quiz -->
+
+</div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// ============================================================
+// TAB NAVIGATION
+// ============================================================
+function showTab(t){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.onclick && b.onclick.toString().includes("'"+t+"'")){b.classList.add('active')}
+  });
+}
+
+// ============================================================
+// TEORIA NAVIGATION
+// ============================================================
+function showSection(id){
+  document.querySelectorAll('.teoria-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.teoria-nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ============================================================
+// QUIZ DATA — 50 questions with progressive difficulty
+// ============================================================
+const QUESTIONS = [
+// ---- FUNDAMENTOS / ESCALAS (Dif 1) ----
+{cat:'FUND',diff:1,text:'Qual é a principal finalidade da ET-ADGV 3.0?',opts:['Definir a estrutura de metadados geoespaciais','Definir as regras de aquisição de cada classe de objetos da ET-EDGV 3.0','Estabelecer o sistema de projeção cartográfica padrão do Brasil','Padronizar os símbolos cartográficos das cartas topográficas'],correct:1,exp:'A ET-ADGV 3.0 tem por finalidade definir as <strong>regras de aquisição</strong> (geometria, atributos, dimensões mínimas, topologia) de cada classe de objetos prevista na ET-EDGV 3.0. Não trata de metadados, projeção ou simbologia.',ref:'ET-ADGV 3.0 — Seção 1.1 Objetivo'},
+
+{cat:'FUND',diff:1,text:'A ET-EDGV 3.0 e a ET-ADGV 3.0 têm funções distintas. Qual par de definições está CORRETO?',opts:['ET-EDGV: define como adquirir; ET-ADGV: define a estrutura dos dados','ET-EDGV: define a estrutura dos dados; ET-ADGV: define como adquirir','Ambas definem a mesma coisa, sendo documentos redundantes','ET-EDGV: define os símbolos; ET-ADGV: define as projeções'],correct:1,exp:'A <strong>ET-EDGV 3.0</strong> define o <em>quê</em> existe (estrutura de dados, classes, atributos, relações). A <strong>ET-ADGV 3.0</strong> define o <em>como adquirir</em> (regras geométricas, topológicas, dimensões mínimas). São documentos complementares.',ref:'ET-ADGV 3.0 — Seção 1.2 Contexto'},
+
+{cat:'ESC',diff:1,text:'Na escala 1:25.000, uma distância de 4 cm no mapa corresponde a qual distância real no terreno?',opts:['100 m','250 m','1.000 m','10 km'],correct:2,exp:'D = d × N = 4 cm × 25.000 = 100.000 cm = <strong>1.000 m</strong>. Sempre multiplique a distância no mapa pelo denominador da escala para obter a distância real.',ref:'Cálculo de Escalas — Fórmula D = d × N'},
+
+{cat:'ESC',diff:1,text:'Qual é a correspondência de 0,4 mm no mapa na escala 1:50.000?',opts:['2 m','20 m','200 m','0,2 m'],correct:1,exp:'0,4 mm = 0,04 cm. D = 0,04 cm × 50.000 = 2.000 cm = <strong>20 m</strong>. Este valor é o limiar mínimo de percepção linear em produtos cartográficos.',ref:'ET-ADGV 3.0 — Dimensão mínima de aquisição'},
+
+{cat:'ESC',diff:1,text:'Em uma carta na escala 1:25.000, um lago com área real de 1.500 m² deve ser adquirido como polígono? Considere área mínima = 4 mm² no mapa.',opts:['Sim, pois todo lago deve ser polígono','Não, pois 1.500 m² corresponde a apenas 2,4 mm² no mapa nessa escala, abaixo do mínimo','Sim, pois 1.500 m² é uma área grande','Depende apenas do nome do lago'],correct:1,exp:'Escala 1:25.000 → 1 mm no mapa = 25 m. 1 mm² = 25×25 = 625 m². 4 mm² = 2.500 m² de área mínima. Como 1.500 m² < 2.500 m², o lago não atinge o limiar mínimo e <strong>não deve ser adquirido como polígono</strong> nessa escala.',ref:'ET-ADGV 3.0 — Dimensão mínima · Massa d\'Água'},
+
+// ---- HIDROGRAFIA BÁSICA (Dif 1-2) ----
+{cat:'HID',diff:1,text:'Qual primitiva geométrica é utilizada para representar um lago na ET-ADGV 3.0?',opts:['Ponto','Linha','Polígono','Linha ou ponto dependendo da escala'],correct:2,exp:'Lagos e corpos d\'água com área superficial definida são sempre representados por <strong>polígono (área)</strong> na ET-ADGV 3.0. O polígono deve ser fechado e representar a margem ordinária (nível médio das águas).',ref:'ET-ADGV 3.0 — Categoria HID · Massa d\'Água'},
+
+{cat:'HID',diff:1,text:'Em qual sentido deve ser digitalizado um trecho de drenagem conforme a ET-ADGV 3.0?',opts:['Jusante → Montante (da foz para a nascente)','Montante → Jusante (da nascente para a foz)','Qualquer sentido, pois a orientação não é obrigatória','Do ponto mais elevado ao mais baixo em altitude absoluta'],correct:1,exp:'A ET-ADGV 3.0 exige que todos os trechos de drenagem sejam digitalizados no sentido <strong>montante → jusante</strong> (da nascente para a foz). Essa orientação é fundamental para análises hidrológicas como delimitação de bacias e modelagem de fluxo.',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Regra de Orientação'},
+
+{cat:'HID',diff:1,text:'O que é um "dangling node" em uma rede de drenagem?',opts:['Um nó que conecta três ou mais trechos','Um nó que não se conecta a nenhuma outra feição (extremidade solta)','O nó de confluência de dois rios','O ponto de maior altitude de uma bacia'],correct:1,exp:'<strong>Dangling node</strong> (nó pendente) é um nó que não possui conexão com outra feição — uma extremidade solta de uma linha. Em redes de drenagem, pode representar uma nascente legítima, mas se aparecer em ponto de confluência, indica que os trechos não estão corretamente conectados.',ref:'ET-ADGV 3.0 — Topologia de Redes · Erros'},
+
+{cat:'HID',diff:2,text:'Um rio tem largura real de 8 m. Em uma carta na escala 1:25.000 (limiar = 10 m), como deve ser representado?',opts:['Apenas como polígono de massa d\'água','Apenas como trecho de drenagem linear (linha)','Como linha E polígono simultaneamente','Como ponto, pois é muito estreito'],correct:1,exp:'Na escala 1:25.000, o limiar mínimo para faixa de rio é 0,4 mm = 10 m. Como 8 m < 10 m, o rio <strong>não atinge o limiar</strong> e deve ser representado apenas como <strong>trecho de drenagem linear (linha)</strong>, sem polígono de massa d\'água.',ref:'ET-ADGV 3.0 — Critério linha/polígono para rios'},
+
+{cat:'HID',diff:2,text:'Quando um trecho de drenagem passa por baixo de uma ponte, como deve ser representado?',opts:['O trecho é interrompido sob a ponte e reinicia após ela','O trecho é contínuo — não é interrompido pela presença da ponte','O trecho é substituído por um ponto debaixo da ponte','O trecho deve contornar a ponte pelas margens'],correct:1,exp:'A ET-ADGV 3.0 exige que o trecho de drenagem seja <strong>contínuo</strong> sob estruturas como pontes. A ponte é uma feição independente. Interromper o rio cria um gap na rede hidrográfica, tornando análises de conectividade impossíveis.',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Continuidade'},
+
+{cat:'HID',diff:2,text:'Na representação de uma confluência de rios, o que deve existir entre os trechos de drenagem no ponto de junção?',opts:['Um ponto cotado de altitude','Um nó compartilhado com as mesmas coordenadas entre os trechos','Uma lacuna para indicar que são rios distintos','Dois nós separados, um para cada rio'],correct:1,exp:'Toda confluência exige um <strong>nó compartilhado</strong> — o vértice final do afluente deve ter exatamente as mesmas coordenadas que um vértice do rio receptor. Sem esse nó, os trechos são topologicamente desconectados, inviabilizando a rede.',ref:'ET-ADGV 3.0 — Topologia HID · Confluência'},
+
+{cat:'HID',diff:2,text:'Um rio amplo (largura ≥ limiar da escala) é representado tanto como polígono de massa d\'água quanto como trecho de drenagem linear. Qual é a relação topológica exigida entre eles?',opts:['O trecho linear deve passar fora do polígono, pelas margens','O trecho linear deve estar completamente contido dentro do polígono de massa d\'água','Os dois são independentes e não precisam ter relação espacial','O trecho linear deve passar sobre a borda do polígono'],correct:1,exp:'Quando há representação dupla (linha + polígono), o trecho de drenagem linear deve estar <strong>completamente contido dentro</strong> do polígono de massa d\'água. O trecho linear é o eixo do rio, e o polígono é a faixa margem-a-margem.',ref:'ET-ADGV 3.0 — Relacionamento Trecho × Massa d\'Água'},
+
+// ---- TRANSPORTE BÁSICO (Dif 1-2) ----
+{cat:'TRA',diff:1,text:'Como os trechos rodoviários devem ser representados em uma interseção em nível (cruzamento físico)?',opts:['Cada via é contínua e não é partida, independente do cruzamento','Os trechos devem ser partidos no ponto de cruzamento e compartilhar um nó topológico','Apenas a via de maior hierarquia passa inteira; a outra é partida','Os trechos se sobrepõem sem necessidade de nó'],correct:1,exp:'Em toda interseção em nível (cruzamento físico de vias), os segmentos devem ser <strong>partidos no ponto de cruzamento</strong> e devem <strong>compartilhar um nó topológico</strong>. Sem o nó, a rede não é roteável — o sistema de navegação não encontraria o caminho.',ref:'ET-ADGV 3.0 — Transporte · Regra R-TR-03'},
+
+{cat:'TRA',diff:1,text:'Uma via passa por cima de outra em um viaduto, sem conexão física entre elas. Como devem ser tratados os trechos?',opts:['Com um nó compartilhado no cruzamento geométrico para indicar a posição do viaduto','Sem nó no cruzamento geométrico; os trechos são independentes','Com dois nós sobrepostos, um para cada via','Com uma feição especial "viaduto" que conecta os dois trechos'],correct:1,exp:'Quando uma via passa <strong>por cima de outra sem conexão física</strong> (viaduto), <strong>NÃO deve existir nó</strong> no cruzamento geométrico. Os trechos são independentes. O atributo <code>posicaoRelativa = elevado</code> identifica o viaduto. Inserir um nó falso cria conectividade inexistente.',ref:'ET-ADGV 3.0 — Transporte · Regra R-TR-07 · Viaduto'},
+
+{cat:'TRA',diff:1,text:'Qual é a primitiva geométrica utilizada para representar um trecho rodoviário na ET-ADGV 3.0?',opts:['Ponto (centro da via)','Linha (eixo da via)','Polígono (faixa de domínio)','Linha dupla (uma para cada pista)'],correct:1,exp:'O trecho rodoviário é sempre representado por <strong>linha (eixo da via)</strong>, independente do número de pistas. O eixo é a representação padrão. Vias com canteiro central são representadas por dois trechos paralelos (um por pista), mas cada um ainda é uma linha.',ref:'ET-ADGV 3.0 — Trecho Rodoviário · Primitiva Geométrica'},
+
+{cat:'TRA',diff:2,text:'Uma rodovia federal muda de pavimentada para não pavimentada a partir de um determinado ponto. Qual é a ação correta segundo a ET-ADGV 3.0?',opts:['Manter um único trecho com o atributo da maior parte da via','Partir o trecho no ponto de mudança e atribuir o revestimento correto para cada segmento','Representar a mudança apenas com um ponto de referência, sem partir o trecho','Ignorar a mudança pois não é um atributo relevante'],correct:1,exp:'A ET-ADGV 3.0 exige que a via seja <strong>partida em toda mudança de atributo relevante</strong>, incluindo tipo de revestimento (<code>pavimentado</code> vs <code>não pavimentado</code>). Cada segmento deve ter atributos homogêneos ao longo de toda a sua extensão.',ref:'ET-ADGV 3.0 — Trecho Rodoviário · Partição por Atributo'},
+
+{cat:'TRA',diff:2,text:'O que caracteriza um "overshoot" em uma rede de transporte?',opts:['A via está abaixo do nível do terreno (túnel)','A linha ultrapassa o ponto correto de terminação, criando um nó pendente além do final','A via passa por cima de outra (viaduto)','A via tem largura maior do que o esperado na escala'],correct:1,exp:'<strong>Overshoot</strong> é o erro em que uma linha <strong>ultrapassa o ponto correto de terminação</strong>, criando um segmento espúrio além do final legítimo. Isso gera um dangling node (nó pendente) e invalida a conectividade da rede.',ref:'ET-ADGV 3.0 — Topologia TRA · Overshoot'},
+
+// ---- TOPOLOGIA INTERMEDIÁRIA (Dif 2) ----
+{cat:'TOP',diff:2,text:'Qual erro topológico ocorre quando uma linha não alcança o ponto de junção com outra feição, deixando uma lacuna (gap)?',opts:['Overshoot','Undershoot','Dangling node','Auto-interseção'],correct:1,exp:'O <strong>undershoot</strong> ocorre quando uma linha <strong>não alcança</strong> o ponto de conexão com outra feição, deixando uma lacuna (gap). É o oposto do overshoot. Ambos invalidam a topologia da rede.',ref:'ET-ADGV 3.0 — Topologia · Undershoot'},
+
+{cat:'TOP',diff:2,text:'Qual das seguintes afirmações sobre polígonos na ET-ADGV 3.0 está CORRETA?',opts:['Polígonos podem ter auto-interseções desde que sejam pequenas','Polígonos devem ser fechados (último vértice = primeiro) e sem auto-interseções','Polígonos podem ser abertos se a feição estiver no limite da folha','Polígonos não precisam de precisão na borda pois são areas genéricas'],correct:1,exp:'Polígonos devem ser obrigatoriamente <strong>fechados</strong> (o último vértice deve ser idêntico ao primeiro) e <strong>sem auto-interseções</strong> (o contorno não deve cruzar a si mesmo). Polígonos que não atendem a essas regras são geometricamente inválidos.',ref:'ET-ADGV 3.0 — Primitivas Geométricas · Regras de Polígono'},
+
+{cat:'TOP',diff:2,text:'Dois polígonos adjacentes da mesma classe (ex: dois trechos de vegetação) se sobrepõem em uma faixa. Isso representa qual tipo de erro topológico?',opts:['Undershoot','Dangling node','Sobreposição indevida (overlap)','Polígono aberto'],correct:2,exp:'A <strong>sobreposição indevida</strong> (overlap) ocorre quando dois polígonos da mesma classe se sobrepõem, criando uma área com dupla cobertura. Feições do mesmo tipo não devem se sobrepor — devem ser adjacentes (borda a borda) ou separadas.',ref:'ET-ADGV 3.0 — Topologia · Sobreposição'},
+
+{cat:'TOP',diff:2,text:'Qual primitiva geométrica é utilizada para representar uma nascente?',opts:['Linha','Polígono','Ponto','Linha e ponto simultaneamente'],correct:2,exp:'A <strong>nascente</strong> é representada como <strong>ponto</strong>, pois não tem extensão dimensionável na escala do produto. Outras feições pontuais: marcos, pontos cotados, quedas d\'água (em escalas pequenas).',ref:'ET-ADGV 3.0 — HID · Nascente'},
+
+// ---- ESCALAS INTERMEDIÁRIAS (Dif 2) ----
+{cat:'ESC',diff:2,text:'Um técnico mediu 3,5 cm em uma carta e quer saber a distância real. A escala é 1:100.000. Qual é a distância real?',opts:['350 m','3.500 m','35.000 m','350 km'],correct:1,exp:'D = d × N = 3,5 cm × 100.000 = 350.000 cm = <strong>3.500 m = 3,5 km</strong>. Regra: sempre multiplique por N e converta as unidades.',ref:'Cálculo de Escala · D = d × N'},
+
+{cat:'ESC',diff:2,text:'Na escala 1:10.000, qual é a largura mínima de um rio para que ele possa ser representado como polígono? (Limiar = 0,4 mm no mapa)',opts:['0,4 m','4 m','40 m','400 m'],correct:1,exp:'0,4 mm = 0,04 cm. D = 0,04 cm × 10.000 = 400 cm = <strong>4 m</strong>. Portanto, rios com largura ≥ 4 m podem ser representados como polígono nessa escala.',ref:'ET-ADGV 3.0 — Dimensão Mínima em 1:10.000'},
+
+{cat:'ESC',diff:2,text:'MapTopoPE e MapTopoGE diferem na escala de visualização. Qual afirmação está CORRETA?',opts:['MapTopoPE: escalas > 1:25.000; MapTopoGE: escalas ≤ 1:25.000','MapTopoPE: escalas ≤ 1:25.000; MapTopoGE: escalas entre 1:25.000 e 1:1.000','São equivalentes, apenas com nomes diferentes','MapTopoPE é para cidades; MapTopoGE é para áreas rurais'],correct:1,exp:'<strong>MapTopoPE</strong> (Pequenas Escalas): 1:25.000 e menores (1:50.000, 1:100.000...). <strong>MapTopoGE</strong> (Grandes Escalas): maiores que 1:25.000 até 1:1.000. A maior escala significa mais detalhamento e mais classes de objetos adquiridos.',ref:'ET-EDGV 3.0 — Seção 1.2 · MapTopoPE × MapTopoGE'},
+
+// ---- HIDROGRAFIA AVANÇADA (Dif 3) ----
+{cat:'HID',diff:3,text:'Na ET-ADGV 3.0, quando o trecho de drenagem e o polígono de massa d\'água coexistem para o mesmo rio, qual deve ser a relação topológica entre eles?',opts:['O trecho linear deve ser externo ao polígono para facilitar a visualização','O trecho linear deve estar completamente contido dentro do polígono de massa d\'água','O trecho linear deve coincidir com a borda do polígono','Não há exigência de relação topológica entre eles'],correct:1,exp:'A ET-ADGV 3.0 exige que o trecho de drenagem linear (eixo do talvegue) esteja <strong>completamente contido dentro</strong> do polígono de massa d\'água quando ambos coexistem. O eixo não deve tocar ou cruzar a borda do polígono, exceto em pontos de entrada/saída.',ref:'ET-ADGV 3.0 — Topologia HID · Contenção do Eixo'},
+
+{cat:'HID',diff:3,text:'Uma barragem é adquirida como linha. Qual condição topológica deve ser satisfeita obrigatoriamente?',opts:['A linha da barragem deve ser paralela ao curso d\'água','A linha da barragem deve cruzar o polígono de massa d\'água formado por ela e tocar ambas as margens','A linha da barragem deve estar fora da área do reservatório','A barragem deve ser representada apenas como ponto em escalas menores que 1:50.000'],correct:1,exp:'A linha de barragem deve: (1) <strong>cruzar o polígono de massa d\'água</strong> do reservatório formado; (2) <strong>tocar ambas as margens</strong> do rio (nós nas margens). Ela separa o trecho de drenagem a montante do trecho a jusante.',ref:'ET-ADGV 3.0 — Barragem · Regras Topológicas'},
+
+{cat:'HID',diff:3,text:'Qual é o atributo que indica se um curso d\'água mantém fluxo durante todo o ano ou apenas em determinadas épocas?',opts:['tipoTrecho','ordemHidrografica','situacaoLeito / regime','geometriaAproximada'],correct:2,exp:'O atributo <strong>situacaoLeito</strong> (ou regime) classifica o curso d\'água como: perene (fluxo o ano todo), intermitente (seca em períodos), efêmero (apenas durante e logo após chuvas) ou seco (leito seco no momento do levantamento).',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Atributo situacaoLeito'},
+
+{cat:'HID',diff:3,text:'Uma ilha existe dentro de um polígono de lago. Qual é a representação correta na ET-ADGV 3.0?',opts:['A ilha é ignorada e o polígono do lago é contínuo sobre ela','A ilha é representada como polígono de ilha (hid_ilha_a) e o polígono do lago deve ser "perfurado" ao redor da ilha','A ilha é representada como ponto no centro do lago','O polígono do lago é dividido ao meio pela ilha'],correct:1,exp:'A ilha deve ser representada como <strong>polígono de ilha (hid_ilha_a)</strong>. O polígono do lago deve ter um <strong>"buraco" (ring interno)</strong> correspondente ao contorno da ilha, resultando em um polígono com geometria multianel (exterior + anel interior da ilha).',ref:'ET-ADGV 3.0 — HID · Ilha em Corpo d\'Água'},
+
+{cat:'HID',diff:3,text:'Qual é a diferença entre uma área úmida (hid_area_umida_a) e uma massa d\'água (hid_massa_dagua_a) na ET-ADGV 3.0?',opts:['Área úmida é sempre menor que 1 ha; massa d\'água é sempre maior','Área úmida representa brejos/várzeas/pântanos sem superfície d\'água livre definida; massa d\'água tem superfície livre permanente','São a mesma classe, apenas com nomes diferentes','Área úmida é artificial; massa d\'água é natural'],correct:1,exp:'<strong>Massa d\'água</strong> tem <em>superfície livre permanente</em> (espelho d\'água visível). <strong>Área úmida</strong> representa brejos, várzeas e pântanos onde a água satura o solo mas sem necessariamente ter espelho d\'água definido o tempo todo. A distinção é pela natureza da superfície hídrica.',ref:'ET-ADGV 3.0 — HID · Distinção Área Úmida × Massa d\'Água'},
+
+// ---- TRANSPORTE AVANÇADO (Dif 3) ----
+{cat:'TRA',diff:3,text:'Uma rodovia federal de pista dupla com canteiro central. Como os trechos rodoviários devem ser adquiridos?',opts:['Um único trecho pelo centro da via (entre as pistas)','Dois trechos paralelos, um para cada pista, com nós conectando-os nos pontos de retorno','Um trecho por faixa de rolamento, totalizando 4 ou mais trechos','Um único trecho com o atributo nrFaixas = 4'],correct:1,exp:'Vias com canteiro central são representadas por <strong>dois trechos paralelos</strong>, um por pista de rolamento. Cada pista é uma feição independente. Os pontos de retorno (conversão em U) são nós que conectam os dois trechos paralelos.',ref:'ET-ADGV 3.0 — Trecho Rodoviário · Pista Dupla'},
+
+{cat:'TRA',diff:3,text:'O atributo "posicaoRelativa" de um trecho rodoviário pode assumir quais valores relevantes para distinção de nível?',opts:['alto / médio / baixo','em nível / elevado / subterrâneo','urbano / rural / periurbano','federal / estadual / municipal'],correct:1,exp:'O atributo <strong>posicaoRelativa</strong> assume os valores: <em>em nível</em> (superfície normal), <em>elevado</em> (viaduto, passagem elevada) e <em>subterrâneo</em> (túnel). Esse atributo determina se há ou não nó topológico em cruzamentos geométricos.',ref:'ET-ADGV 3.0 — Trecho Rodoviário · posicaoRelativa'},
+
+{cat:'TRA',diff:3,text:'Em uma ferrovia, a bitola métrica corresponde a qual afastamento entre os trilhos?',opts:['0,60 m','1,00 m','1,44 m','1,60 m'],correct:1,exp:'As bitolas padrão no Brasil são: <strong>métrica = 1,00 m</strong> (mais comum, usada pela maioria das ferrovias brasileiras), <strong>larga = 1,60 m</strong> (algumas ferrovias de mineração) e <strong>padrão internacional = 1,435 m</strong> (menos comum no Brasil).',ref:'ET-ADGV 3.0 — Trecho Ferroviário · Atributo bitola'},
+
+{cat:'TRA',diff:3,text:'Segundo a ET-ADGV 3.0, quando deve ocorrer a partição de um trecho rodoviário?',opts:['Apenas em interseções com outras vias','Em todo ponto de mudança de atributo relevante: revestimento, jurisdição, nome, nrFaixas, situação','Apenas quando a via muda de direção','A cada quilômetro para facilitar a indexação'],correct:1,exp:'A partição deve ocorrer em <strong>todo ponto de mudança de atributo relevante</strong>: mudança de revestimento (pavimentado/não pavimentado), jurisdição (federal/estadual/municipal), nome da via, número de faixas, situação (operacional/em construção). Cada trecho deve ter atributos homogêneos.',ref:'ET-ADGV 3.0 — Trecho Rodoviário · Critérios de Partição'},
+
+{cat:'TRA',diff:3,text:'Uma passarela de pedestres sobre uma rodovia. Como deve ser representada na ET-ADGV 3.0?',opts:['Como trecho rodoviário com posicaoRelativa = elevado','Como feição de Estrutura de Mobilidade Urbana (EMU), independente do subsistema rodoviário','Como uma variante do trecho rodoviário principal','Como ponto de interesse sobre a rodovia'],correct:1,exp:'Passarelas e passagens subterrâneas para pedestres são feições da categoria <strong>Estrutura de Mobilidade Urbana (EMU)</strong>, não pertencentes ao subsistema rodoviário. São classes distintas: a passarela é para pedestres, não para veículos.',ref:'ET-ADGV 3.0 — EMU · Passarela Pedestre'},
+
+// ---- TOPOLOGIA AVANÇADA (Dif 3-4) ----
+{cat:'TOP',diff:3,text:'Um polígono de edificação apresenta auto-interseção em um vértice. Que tipo de erro isso representa e qual é a consequência?',opts:['Overshoot — impede o fechamento do polígono','Auto-interseção — o polígono é geometricamente inválido e não pode ser analisado corretamente','Undershoot — falta de vértice','Sobreposição — apenas visual, sem consequência'],correct:1,exp:'A <strong>auto-interseção</strong> torna o polígono <strong>geometricamente inválido</strong> (invalid geometry). Operações espaciais como cálculo de área, buffer e análise topológica falham. O polígono deve ser corrigido para que seu contorno não se cruce em nenhum ponto.',ref:'ET-ADGV 3.0 — Topologia · Auto-interseção'},
+
+{cat:'TOP',diff:3,text:'Qual é a diferença entre um "pseudo-nó" legítimo e um "pseudo-nó" errôneo em uma rede?',opts:['Pseudo-nó legítimo: conecta exatamente 2 trechos de atributos diferentes. Errôneo: conecta 2 trechos sem mudança de atributo','Pseudo-nó legítimo é em drenagem; errôneo é em rodovias','Ambos são sempre erros — não existe pseudo-nó legítimo','Pseudo-nó é sempre errôneo pois indica falta de conexão'],correct:0,exp:'Um <strong>pseudo-nó legítimo</strong> conecta exatamente 2 linhas e ocorre em ponto de <em>mudança de atributo</em> (ex: pavimento muda de asfalto para terra). Um <strong>pseudo-nó errôneo</strong> aparece sem mudança de atributo — indica partição desnecessária ou erro de digitalização.',ref:'ET-ADGV 3.0 — Topologia · Pseudo-nó'},
+
+{cat:'TOP',diff:4,text:'Na ET-ADGV 3.0, qual é a regra topológica específica para o relacionamento entre o trecho de drenagem e a barragem?',opts:['O trecho de drenagem deve ser interrompido pela barragem, formando dois trechos independentes que não se tocam','O trecho a montante e o trecho a jusante devem ser feições separadas com nós nos pontos de toque com a barragem, e a barragem deve tocar ambas as margens','O trecho de drenagem passa por cima da barragem sem interrupção','A barragem é uma feição de hidrografia que substitui o trecho de drenagem no local'],correct:1,exp:'A barragem <strong>particiona</strong> o trecho de drenagem: o trecho a montante e o trecho a jusante são feições separadas, cada um com seu nó no ponto de toque com a barragem. A linha de barragem deve <strong>tocar ambas as margens</strong> e <strong>cruzar o polígono de massa d\'água</strong> do reservatório.',ref:'ET-ADGV 3.0 — Barragem · Topologia com Drenagem'},
+
+// ---- ESCALAS AVANÇADAS (Dif 3-4) ----
+{cat:'ESC',diff:3,text:'Na escala 1:25.000, qual é a área mínima (em m²) para que um polígono de edificação seja adquirido? Considere a dimensão mínima = 0,4 mm em ambas as dimensões.',opts:['10 m²','100 m²','1.000 m²','10.000 m²'],correct:1,exp:'0,4 mm = 10 m na escala 1:25.000. Uma edificação deve ter pelo menos 10 m × 10 m = <strong>100 m²</strong> para ser adquirida como polígono. Edificações menores podem ser suprimidas ou representadas como ponto em escalas pequenas.',ref:'ET-ADGV 3.0 — Edificação · Dimensão Mínima 1:25.000'},
+
+{cat:'ESC',diff:3,text:'Em uma carta 1:50.000, a que distância real no terreno correspondem 2,4 cm medidos no mapa?',opts:['120 m','1.200 m','12 km','120 km'],correct:1,exp:'D = d × N = 2,4 cm × 50.000 = 120.000 cm = <strong>1.200 m = 1,2 km</strong>.',ref:'Cálculo de Escala · D = d × N'},
+
+{cat:'ESC',diff:4,text:'Um açude tem área real de 18.000 m². Na escala 1:25.000 (área mínima = 4 mm² no mapa), esse açude deve ser adquirido como polígono?',opts:['Não, pois 18.000 m² < 25.000 m² (limiar)','Sim, pois 18.000 m² corresponde a 28,8 mm² no mapa, bem acima do mínimo de 4 mm²','Não, pois açudes nunca são polígonos','Sim, mas apenas como ponto de referência'],correct:1,exp:'Na escala 1:25.000: 1 mm no mapa = 25 m no terreno. 1 mm² = 625 m². 4 mm² = 2.500 m². Como 18.000 m² / 625 = 28,8 mm² no mapa, e 28,8 mm² ≥ 4 mm² mínimo, o açude <strong>deve ser adquirido como polígono</strong>.',ref:'ET-ADGV 3.0 — Massa d\'Água · Dimensão Mínima'},
+
+// ---- QUESTÕES DE NÍVEL 4 (DIFÍCEIS) ----
+{cat:'HID',diff:4,text:'Considere um trecho de rio que passa por uma área urbana com múltiplas pontes. Em relação à topologia da rede hidrográfica, qual afirmação está CORRETA?',opts:['Cada ponte exige uma partição do trecho de drenagem','O trecho de drenagem deve ser contínuo através de todas as pontes, sem partições, a menos que haja mudança de atributo','As pontes devem ser representadas como interrupções do trecho com dois nós em cada extremidade da ponte','O trecho deve ser interrompido apenas na primeira e na última ponte da área urbana'],correct:1,exp:'O trecho de drenagem deve ser <strong>contínuo</strong> através das pontes. As pontes são feições independentes da rede de transporte. A drenagem só é partida em pontos de mudança de atributo (situacaoLeito, regime, nome) ou em confluências/bifurcações — não em pontes.',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Continuidade e Topologia'},
+
+{cat:'TOP',diff:4,text:'Qual é a diferença topológica fundamental entre um "nó de interseção" e um "pseudo-nó" em redes da ET-ADGV 3.0?',opts:['Nó de interseção conecta 2 linhas; pseudo-nó conecta 3 ou mais','Nó de interseção conecta 3 ou mais trechos; pseudo-nó conecta exatamente 2 trechos','Nó de interseção é em drenagem; pseudo-nó é em transporte','Ambos são equivalentes na ET-ADGV 3.0'],correct:1,exp:'<strong>Nó de interseção</strong>: conecta 3 ou mais trechos (entroncamento, confluência). <strong>Pseudo-nó</strong>: conecta exatamente 2 trechos. O pseudo-nó é legítimo quando há mudança de atributo entre os dois trechos; é errôneo quando aparece sem motivo aparente (partição desnecessária).',ref:'ET-ADGV 3.0 — Topologia · Tipos de Nós'},
+
+{cat:'TRA',diff:4,text:'Uma rodovia em construção tem um trecho operacional e um trecho em obras no mesmo eixo. Qual tratamento a ET-ADGV 3.0 exige?',opts:['Representar apenas o trecho operacional; o trecho em construção não é adquirido','Partir o eixo no ponto de mudança e atribuir situação = operacional ao primeiro e situação = em construção ao segundo','Representar como um único trecho com situação = em construção para toda a via','Representar apenas o trecho em construção, pois o operacional já existe em base anterior'],correct:1,exp:'Toda mudança de atributo exige partição do trecho. A <strong>situação</strong> (operacional / em construção / planejado / abandonado) é um atributo obrigatório. Os dois segmentos são representados com o mesmo eixo mas como feições distintas, cada uma com seu valor de situação.',ref:'ET-ADGV 3.0 — Trecho Rodoviário · Atributo Situação'},
+
+{cat:'HID',diff:4,text:'Na ET-ADGV 3.0, como deve ser representado um canal de irrigação artificial? Qual atributo o distingue de um rio natural?',opts:['Como polígono de massa d\'água com tipo = canal; sem representação linear','Como trecho de drenagem linear com atributo tipoTrecho = artificial','Como feição de saneamento básico, não como hidrografia','Como linha de energia (condução d\'água por tubulação)'],correct:1,exp:'Canais artificiais de irrigação são representados como <strong>trechos de drenagem lineares</strong> com o atributo <strong>tipoTrecho = artificial</strong> (em oposição a tipoTrecho = natural para rios naturais). A rede hidrográfica abrange tanto cursos naturais quanto artificiais.',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Canais Artificiais'},
+
+{cat:'ESC',diff:4,text:'Um engenheiro precisa verificar se uma estrada de terra (largura 4 m) deve ser representada como área (polígono) em uma carta 1:5.000. A dimensão mínima é 0,4 mm no mapa. A estrada deve ser adquirida como polígono?',opts:['Sim, pois 4 m > 0 m e qualquer largura é válida','Não, pois 4 m < 2 m (limiar em 1:5.000)','Sim, pois 4 m > 2 m (limiar em 1:5.000), portanto a largura é adquirível','Não, pois estradas de terra nunca são polígonos'],correct:2,exp:'Limiar em 1:5.000: 0,4 mm = 0,4 × 5.000 mm = 2.000 mm = 2 m. A estrada tem 4 m de largura. Como 4 m > 2 m (limiar), a estrada <strong>pode ser representada como polígono de área</strong> nessa escala. Em 1:25.000, 4 m < 10 m e seria apenas linha.',ref:'ET-ADGV 3.0 — Dimensão Mínima em 1:5.000'},
+
+{cat:'TOP',diff:4,text:'Na ET-ADGV 3.0, o que é a "regra de não sobreposição entre polígonos adjacentes" e por que é importante?',opts:['Polígonos nunca podem se tocar; deve sempre haver um espaço entre eles','Polígonos da mesma classe não devem se sobrepor; seus bordos devem ser compartilhados (mesmas coordenadas) onde são adjacentes','Polígonos de classes diferentes nunca podem coexistir na mesma área','Os bordos dos polígonos não precisam coincidir, apenas se aproximar'],correct:1,exp:'A regra exige que polígonos da mesma classe <strong>não se sobreponham</strong> e que seus bordos sejam <strong>compartilhados com as mesmas coordenadas</strong> onde são adjacentes. Sobreposição gera dupla contagem; bordos não coincidentes geram gaps (lacunas) ou sliver polygons (faixas finas errôneas).',ref:'ET-ADGV 3.0 — Topologia · Não-Sobreposição'},
+
+// ---- QUESTÕES MISTAS / APLICADAS (Dif 3-4) ----
+{cat:'HID',diff:3,text:'Um técnico está digitalizando uma rede de drenagem e percebe que um afluente termina próximo, mas não exatamente, ao rio principal (há uma diferença de 0,5 m entre os vértices). Qual é o erro e como corrigir?',opts:['Erro: overshoot. Corrigir: encurtar o afluente','Erro: undershoot. Corrigir: estender o afluente até o ponto exato no rio principal criando nó compartilhado','Erro: auto-interseção. Corrigir: reduzir vértices','Não é erro, pois 0,5 m é margem aceitável'],correct:1,exp:'É um <strong>undershoot</strong> — o afluente não alcança o rio principal. A correção é <strong>estender o afluente</strong> até o ponto exato de junção e criar um <strong>nó compartilhado</strong>. Tolerâncias geométricas (snapping tolerance) devem garantir coincidência exata de coordenadas.',ref:'ET-ADGV 3.0 — Topologia · Undershoot · Correção'},
+
+{cat:'TRA',diff:3,text:'Uma rotatória (rotunda) deve ser adquirida na ET-ADGV 3.0. Qual é a representação correta?',opts:['Como um polígono circular de area de transporte','Como um conjunto de trechos rodoviários lineares que formam o anel, com nós em cada entrada/saída','Como um único ponto no centro da rotatória','Como uma linha circular única com atributo tipo = rotatória'],correct:1,exp:'A rotatória é representada pela <strong>topologia dos trechos</strong>: um conjunto de trechos lineares formando o anel circular, com nós em cada ponto de entrada e saída. Não existe uma feição "rotatória" — ela emerge da estrutura da rede de trechos.',ref:'ET-ADGV 3.0 — Transporte · Rotatória'},
+
+{cat:'HID',diff:4,text:'Qual é o tratamento correto para um canal artificial que passa subterraneamente (galeria pluvial urbana) na ET-ADGV 3.0?',opts:['Não é adquirido pois é subterrâneo e invisível em imagem','É adquirido como trecho de drenagem com posicaoRelativa = subterrâneo e tipoTrecho = artificial','É adquirido como feição de saneamento básico (SAB), não de hidrografia (HID)','É representado como ponto de captação em cada extremidade'],correct:1,exp:'Galerias pluviais urbanas são adquiridas como <strong>trecho de drenagem</strong> com os atributos: <code>tipoTrecho = artificial</code> e <code>posicaoRelativa = subterrâneo</code>. Continuam sendo feições de hidrografia (HID), não de saneamento básico.',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Galerias Pluviais'},
+
+{cat:'ESC',diff:3,text:'Um levantamento usa escala 1:2.000. Qual é a menor edificação (lado mínimo quadrado) que deve ser adquirida como polígono?',opts:['0,2 m','0,8 m','2 m','8 m'],correct:1,exp:'0,4 mm × 2.000 = 800 mm = 0,8 m. A edificação deve ter pelo menos <strong>0,8 m × 0,8 m</strong> para ser adquirida como polígono nessa escala. Em escalas grandes como 1:2.000, até pequenas construções são capturadas.',ref:'ET-ADGV 3.0 — Dimensão Mínima em 1:2.000'},
+
+{cat:'FUND',diff:3,text:'A ET-ADGV 3.0 foi publicada em qual data e por qual instituição?',opts:['Março de 2015 pelo IBGE','Dezembro de 2017 pela CONCAR','Dezembro de 2018 pelo Exército Brasileiro (DSG)','Janeiro de 2020 pelo Ministério de Infraestrutura'],correct:2,exp:'A ET-ADGV 3.0 foi publicada em <strong>21 de dezembro de 2018</strong> pelo <strong>Exército Brasileiro, Diretoria de Serviço Geográfico (DSG)</strong>, sendo remetida para homologação pela CONCAR. Substituiu a ET-ADGV Defesa F Ter nos novos projetos a partir de 2019.',ref:'ET-ADGV 3.0 — Informações Gerais · Data e Publicação'},
+
+{cat:'TOP',diff:4,text:'Qual das seguintes situações NÃO configura erro topológico segundo a ET-ADGV 3.0?',opts:['Um trecho de drenagem terminando em nascente sem conectar a outro trecho','Dois polígonos de edificação se sobrepondo parcialmente','Uma via com posicaoRelativa = elevado cruzando outra via sem nó compartilhado','Um trecho rodoviário terminando no meio do espaço sem conectar a nada (fim de rua sem saída)'],correct:2,exp:'Quando uma via tem <code>posicaoRelativa = elevado</code> (viaduto), ela deve <strong>cruzar outra via SEM nó</strong> — isso é correto! O cruzamento sem nó é obrigatório quando não há conexão física. As outras alternativas são erros: nascente isolada pode ser dangling node, sobreposição é overlap, via terminando "no ar" é dangling node.',ref:'ET-ADGV 3.0 — Transporte · Viaduto SEM nó = Correto'},
+
+{cat:'HID',diff:4,text:'Na ET-ADGV 3.0, como deve ser tratado o encontro de um trecho de drenagem com o mar (foz oceânica)?',opts:['O trecho é interrompido na linha de costa e a foz é marcada como ponto','O trecho se estende até uma profundidade mínima de 20 m no oceano','O trecho se conecta topologicamente à feição de costa/linha d\'água e pode ter uma feição de foz (hid_foz_p) no ponto de encontro','O trecho é convertido para feição oceânica a partir do limite da costa'],correct:2,exp:'Na foz oceânica, o trecho de drenagem <strong>conecta-se topologicamente à feição de linha de costa ou limite de massa d\'água</strong>. Uma feição de <strong>foz (hid_foz_p)</strong> pode ser inserida no ponto exato de desembocadura. O trecho não continua no oceano.',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Foz Oceânica'},
+
+{cat:'TRA',diff:4,text:'Segundo a ET-ADGV 3.0, qual atributo classifica o tipo de administração de uma rodovia federal operada por concessionária privada?',opts:['jurisdicao = federal; administracao = concessionária','jurisdicao = privado; administracao = federal','jurisdicao = estadual; administracao = federal','jurisdicao = federal; administracao = DNIT'],correct:0,exp:'A <strong>jurisdição</strong> é federal (a via é de competência federal), mas a <strong>administração</strong> é da concessionária privada. São atributos distintos: jurisdição indica a responsabilidade legal/política; administração indica quem opera na prática.',ref:'ET-ADGV 3.0 — Trecho Rodoviário · Jurisdição × Administração'},
+
+{cat:'TOP',diff:3,text:'Por que a orientação de um trecho de drenagem (montante → jusante) é considerada obrigatória e não apenas recomendada?',opts:['Por questão estética nos mapas','Porque análises hidrológicas como delimitação de bacia, fluxo acumulado e modelagem dependem da orientação correta para calcular direção e sentido de escoamento','Porque o sistema de cores nas cartas depende da orientação','Porque os atributos mudam conforme a orientação'],correct:1,exp:'A orientação montante → jusante é <strong>obrigatória</strong> porque toda análise hidrológica baseada na rede depende da direção correta: cálculo de bacia hidrográfica (watershed), fluxo acumulado, ordem de Strahler, modelagem de transporte de sedimentos — tudo falha com orientação invertida.',ref:'ET-ADGV 3.0 — Trecho de Drenagem · Orientação Obrigatória'},
+
+{cat:'FUND',diff:2,text:'Qual organismo é responsável pela homologação da ET-ADGV 3.0 como norma oficial do Brasil?',opts:['IBGE','Ministério da Infraestrutura','CONCAR — Comissão Nacional de Cartografia','ANA — Agência Nacional de Águas'],correct:2,exp:'A <strong>CONCAR (Comissão Nacional de Cartografia)</strong> é o organismo responsável pela homologação de normas cartográficas no âmbito do Sistema Cartográfico Nacional. A ET-ADGV 3.0, produzida pela DSG/Exército, foi remetida à CONCAR para homologação.',ref:'ET-ADGV 3.0 — Seção 1.1 · CONCAR'},
+
+{cat:'HID',diff:2,text:'Qual feição hidrográfica representa o ponto de origem de um curso d\'água?',opts:['Foz','Queda d\'água','Nascente','Confluência'],correct:2,exp:'A <strong>nascente</strong> (hid_nascente_p) é o ponto de origem de um curso d\'água, representada como feição pontual. A foz é o ponto de desembocadura. A queda d\'água é uma descontinuidade no leito. A confluência é onde dois cursos se encontram.',ref:'ET-ADGV 3.0 — HID · Nascente'},
+
+{cat:'TRA',diff:2,text:'Na ET-ADGV 3.0, um trecho ferroviário com bitola mista deve ter qual valor registrado no atributo bitola?',opts:['larga','métrica','mista','padrão'],correct:2,exp:'Quando um trecho ferroviário possui dois pares de trilhos com bitolas diferentes (trechos que permitem a passagem de trens de bitolas distintas), o valor correto é <strong>mista</strong>. Isso é comum em trechos onde ocorre a transição entre linhas de bitola larga e métrica.',ref:'ET-ADGV 3.0 — Trecho Ferroviário · Atributo bitola'},
+];
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+let allQ = [...QUESTIONS];
+let filtered = [...allQ];
+let order = [];
+let cur = 0;
+let score = 0;
+let answered = [];
+let activeCat = 'all';
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function filterCat(cat, btn){
+  activeCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filtered = cat==='all' ? [...allQ] : allQ.filter(q=>q.cat===cat);
+  initQuiz();
+}
+
+function initQuiz(){
+  order = shuffle([...Array(filtered.length).keys()]);
+  cur = 0; score = 0;
+  answered = new Array(filtered.length).fill(null);
+  document.getElementById('finishScreen').classList.remove('show');
+  document.getElementById('quiz-main-area').style.display='';
+  document.getElementById('qtotal').textContent = filtered.length;
+  renderQ();
+}
+
+function renderQ(){
+  const q = filtered[order[cur]];
+  const qIdx = cur;
+  document.getElementById('qnum').textContent = cur+1;
+  document.getElementById('qscore').textContent = score;
+  document.getElementById('qprog').style.width = (cur/filtered.length*100)+'%';
+
+  const prevAns = answered[cur];
+  const disabled = prevAns !== null;
+
+  let diffLabel = ['','Básico','Intermediário','Avançado','Expert'][q.diff];
+  let diffCls = ['','diff-1','diff-2','diff-3','diff-4'][q.diff];
+
+  const opts = q.opts.map((o,i)=>{
+    let cls = 'opt';
+    if(disabled){
+      cls += ' disabled';
+      if(i === q.correct) cls += ' reveal';
+      if(i === prevAns && prevAns !== q.correct) cls += ' selected-wrong';
+      if(i === prevAns && prevAns === q.correct) cls += ' selected-correct';
+    }
+    return `<div class="${cls}" onclick="choose(${qIdx},${i})" id="opt-${i}">
+      <div class="opt-letter">${'ABCDE'[i]}</div>
+      <div class="opt-text">${o}</div>
+    </div>`;
+  }).join('');
+
+  let expHtml = '';
+  if(disabled){
+    const ok = prevAns === q.correct;
+    expHtml = `<div class="explanation ${ok?'correct':'wrong'} show">
+      <div class="explanation-header">${ok?'✓ Correto!':'✗ Incorreto'}</div>
+      <div class="explanation-text">${q.exp}</div>
+      <div class="explanation-ref">${q.ref}</div>
+    </div>`;
+  }
+
+  const catColors = {HID:'chip-hid',TRA:'chip-tra',ESC:'chip-all',TOP:'chip-all',FUND:'chip-all'};
+
+  document.getElementById('qcards-container').innerHTML = `
+    <div class="qcard">
+      <div class="qcard-header">
+        <div class="qcard-meta">
+          <span class="qcard-num">${cur+1} / ${filtered.length}</span>
+          <span class="chip ${catColors[q.cat]||'chip-all'}">${q.cat}</span>
+          <span class="difficulty ${diffCls}">${diffLabel}</span>
+        </div>
+        <div class="qcard-text">${q.text}</div>
+      </div>
+      <div class="qcard-body">
+        <div class="options">${opts}</div>
+        ${expHtml}
+      </div>
+    </div>`;
+
+  document.getElementById('btnPrev').style.visibility = cur===0?'hidden':'visible';
+  const btnNext = document.getElementById('btnNext');
+  if(disabled){
+    btnNext.style.display = '';
+    btnNext.textContent = cur < filtered.length-1 ? 'Próxima →' : 'Ver Resultado';
+  } else {
+    btnNext.style.display = 'none';
+  }
+}
+
+function choose(qIdx, optIdx){
+  if(answered[qIdx] !== null) return;
+  if(qIdx !== cur) return;
+  const q = filtered[order[cur]];
+  const isOk = optIdx === q.correct;
+  answered[cur] = optIdx;
+  if(isOk) score++;
+  renderQ();
+}
+
+function nextQ(){
+  cur++;
+  if(cur >= filtered.length){ showFinish(); return; }
+  renderQ();
+}
+
+function prevQ(){
+  if(cur>0){cur--;renderQ();}
+}
+
+function showFinish(){
+  document.getElementById('quiz-main-area').style.display='none';
+  const n = filtered.length;
+  const pct = Math.round(score/n*100);
+  document.getElementById('finalScore').textContent = score+'/'+n;
+  document.getElementById('finalLabel').textContent = pct>=80?'Excelente! Você domina a ET-ADGV 3.0 🎉':pct>=60?'Bom resultado! Continue estudando 📚':'Continue revisando o material 💪';
+  document.getElementById('fc').textContent = score;
+  document.getElementById('fw').textContent = n-score;
+  document.getElementById('fp').textContent = pct+'%';
+  document.getElementById('finishScreen').classList.add('show');
+  document.getElementById('qprog').style.width = '100%';
+}
+
+function restartQuiz(){
+  initQuiz();
+}
+
+// init
+initQuiz();
+</script>
+</body>
+</html>
