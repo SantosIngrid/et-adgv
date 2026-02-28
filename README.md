@@ -14,7 +14,7 @@
 ## 🖥️ Demo
 
 Acesse diretamente pelo GitHub Pages:  
-**[https://seu-usuario.github.io/et-adgv/](https://seu-usuario.github.io/et-adgv/)**
+**[https://SantosIngrid.github.io/et-adgv/](https://SantosIngrid.github.io/et-adgv/)**
 
 ---
 
