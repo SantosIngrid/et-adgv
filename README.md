@@ -117,7 +117,4 @@ Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 ---
 
 <p align="center">Feito para facilitar o estudo da cartografia brasileira 🗺️</p>
-
 ---
-
-<p align="center">Feito para facilitar o estudo da cartografia brasileira 🗺️</p>
